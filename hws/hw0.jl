@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.14
 
 using Markdown
 using InteractiveUtils
@@ -23,22 +23,8 @@ using PlutoUI
 # ╔═╡ fafae38e-e852-11ea-1208-732b4744e4c2
 md"_Homework 0, version 4 -- Spring 2021_"
 
-# ╔═╡ 7308bc54-e6cd-11ea-0eab-83f7535edf25
-# edit the code below to set your name and kerberos ID (i.e. email without @mit.edu)
-
-student = (name = "Jazzy Doe", kerberos_id = "jazz")
-
-# press the ▶ button in the bottom right of this cell to run your edits
-# or use Shift+Enter
-
-# you might need to wait until all other cells in this notebook have completed running. 
-# scroll down the page to see what's up
-
-# ╔═╡ cdff6730-e785-11ea-2546-4969521b33a7
-md"""
-
-Submission by: **_$(student.name)_** ($(student.kerberos_id)@mit.edu)
-"""
+# ╔═╡ 836c33ad-c4e1-4c14-b759-f8c7cd906b88
+TableOfContents()
 
 # ╔═╡ a2181260-e6cd-11ea-2a69-8d9d31d1ef0e
 md"""
@@ -92,7 +78,7 @@ Output: $x^2$
 
 # ╔═╡ e02f7ea6-7024-11eb-3672-fd59a6cff79b
 function basic_square(x)
-	return 1 # this is wrong, write your code here!
+	return x*x
 end
 
 # ╔═╡ 6acef56c-7025-11eb-2524-819c30a75d39
@@ -120,14 +106,6 @@ end
 md"That's all that's required for this week. Please submit the notebook. We just wanted to make sure that you're up and running.
 
 If you want to explore further, we have included a few optional exercises below."
-
-# ╔═╡ b3c7a050-e855-11ea-3a22-3f514da746a4
-if student.kerberos_id === "jazz"
-	md"""
-!!! danger "Oops!"
-    **Before you submit**, remember to fill in your name and kerberos ID at the top of this notebook!
-	"""
-end
 
 # ╔═╡ 339c2d5c-e6ce-11ea-32f9-714b3628909c
 md"## (Optional) Exercise 1 - _Square root by Newton's method_
@@ -160,9 +138,18 @@ Step 3 in the algorithm sets the new guess to be the average of `x/a` and the ol
 This is because the square root must be between the numbers `x/a` and `a`. Why?
 "
 
+# ╔═╡ 92670cc9-477f-48ab-963e-0389f48720de
+md"""
+### Exercise 1.1 (Solution)
+"""
+
 # ╔═╡ bccf0e88-e754-11ea-3ab8-0170c2d44628
 ex_1_1 = md"""
-your answer here
+First let's define our terms:
+- *a* is root guess.
+- *x* is the number we want to get the square root from.
+
+Being $a$ our guess, if it turns out to be bigger that the real square root $x$, then $x/a$ will be smaller than the real square root of $x$, if we compute the average of those guesses we will get the average, that will be closer to the true value.
 """ 
 
 # you might need to wait until all other cells in this notebook have completed running. 
@@ -178,9 +165,19 @@ md"### Exercise 1.2
 
 Write a function newton_sqrt(x) which implements the above algorithm."
 
+# ╔═╡ b7df6da3-0828-4647-b009-31a24e2a882d
+md"""
+### Exercise 1.2 (Solution)
+"""
+
 # ╔═╡ 4896bf0c-e754-11ea-19dc-1380bb356ab6
 function newton_sqrt(x, error_margin=0.01, a=x / 2) # a=x/2 is the default value of `a`
-	return x # this is wrong, write your code here!
+	# compute a until difference smaller than error marign
+	while abs(x - a*a) > error_margin
+		a = 0.5*(a + x/a)
+	end
+	# return the last number assigned
+	return a
 end
 
 # ╔═╡ 7a01a508-e78a-11ea-11da-999d38785348
@@ -241,7 +238,7 @@ A package contains a coherent set of functionality that you can often use a blac
 md"Just like the definition above, our `sierpinksi` function is _recursive_: it calls itself."
 
 # ╔═╡ 02b9c9d6-e752-11ea-0f32-91b7b6481684
-complexity = 3
+complexity = 5
 
 # ╔═╡ 1eb79812-e7b5-11ea-1c10-63b24803dd8a
 if complexity == 3 
@@ -273,9 +270,26 @@ area_sierpinski(1) = 0.??
 ```
 """
 
+# ╔═╡ b332e0fa-a231-4366-9067-1da389946e26
+md"""
+### Exercise 2.1 (Solution)
+"""
+
+# ╔═╡ ff4a13fd-3170-4b02-910f-727c19115bc7
+md"""
+The Area of the Sierpinski Triangle it reduces in $3/4$ each iteration. That is:
+- When N = 0; Area = 1
+- When N = 1; Area = 3/4
+- When N = 2; Area = 9/16
+- ...
+
+In general:
+Area = $(\frac{3}{4})^N$, where $N$ is the complexity.
+"""
+
 # ╔═╡ ca8d2f72-e7b6-11ea-1893-f1e6d0a20dc7
 function area_sierpinski(n)
-	return 1.0
+	return 0.75^n
 end
 
 # ╔═╡ 71c78614-e7bc-11ea-0959-c7a91a10d481
@@ -305,6 +319,11 @@ md"""
 
 # ╔═╡ a60a492a-e7bc-11ea-0f0b-75d81ce46a01
 md"That's it for now, see you next week!"
+
+# ╔═╡ bee2a87c-7cfe-41ac-bba3-8bd82e8dd125
+md"""
+## Used functions
+"""
 
 # ╔═╡ dfdeab34-e751-11ea-0f90-2fa9bbdccb1e
 triangle() = compose(context(), polygon([(1, 1), (0, 1), (1 / 2, 0)]))
@@ -366,7 +385,7 @@ PlutoUI = "~0.7.38"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.0"
+julia_version = "1.7.2"
 manifest_format = "2.0"
 
 [[deps.AbstractPlutoDingetjes]]
@@ -633,8 +652,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 
 # ╔═╡ Cell order:
 # ╟─fafae38e-e852-11ea-1208-732b4744e4c2
-# ╟─cdff6730-e785-11ea-2546-4969521b33a7
-# ╠═7308bc54-e6cd-11ea-0eab-83f7535edf25
+# ╠═836c33ad-c4e1-4c14-b759-f8c7cd906b88
 # ╟─a2181260-e6cd-11ea-2a69-8d9d31d1ef0e
 # ╟─31a8fbf8-e6ce-11ea-2c66-4b4d02b41995
 # ╟─f9d7250a-706f-11eb-104d-3f07c59f7174
@@ -643,12 +661,13 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═e02f7ea6-7024-11eb-3672-fd59a6cff79b
 # ╟─6acef56c-7025-11eb-2524-819c30a75d39
 # ╟─348cea34-7025-11eb-3def-41bbc16c7512
-# ╟─b3c7a050-e855-11ea-3a22-3f514da746a4
 # ╟─339c2d5c-e6ce-11ea-32f9-714b3628909c
 # ╟─56866718-e6ce-11ea-0804-d108af4e5653
-# ╠═bccf0e88-e754-11ea-3ab8-0170c2d44628
+# ╟─92670cc9-477f-48ab-963e-0389f48720de
+# ╟─bccf0e88-e754-11ea-3ab8-0170c2d44628
 # ╟─e7abd366-e7a6-11ea-30d7-1b6194614d0a
 # ╟─d62f223c-e754-11ea-2470-e72a605a9d7e
+# ╠═b7df6da3-0828-4647-b009-31a24e2a882d
 # ╠═4896bf0c-e754-11ea-19dc-1380bb356ab6
 # ╠═7a01a508-e78a-11ea-11da-999d38785348
 # ╟─682db9f8-e7b1-11ea-3949-6b683ca8b47b
@@ -666,6 +685,8 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─d7e8202c-e7b5-11ea-30d3-adcd6867d5f5
 # ╠═df0a4068-e7b2-11ea-2475-81b237d492b3
 # ╟─f22222b4-e7b5-11ea-0ea0-8fa368d2a014
+# ╟─b332e0fa-a231-4366-9067-1da389946e26
+# ╟─ff4a13fd-3170-4b02-910f-727c19115bc7
 # ╠═ca8d2f72-e7b6-11ea-1893-f1e6d0a20dc7
 # ╟─71c78614-e7bc-11ea-0959-c7a91a10d481
 # ╟─c21096c0-e856-11ea-3dc5-a5b0cbf29335
@@ -673,6 +694,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─147ed7b0-e856-11ea-0d0e-7ff0d527e352
 # ╟─c1ecad86-e7bc-11ea-1201-23ee380181a1
 # ╟─a60a492a-e7bc-11ea-0f0b-75d81ce46a01
+# ╟─bee2a87c-7cfe-41ac-bba3-8bd82e8dd125
 # ╟─dfdeab34-e751-11ea-0f90-2fa9bbdccb1e
 # ╟─b923d394-e750-11ea-1971-595e09ab35b5
 # ╟─00000000-0000-0000-0000-000000000001
