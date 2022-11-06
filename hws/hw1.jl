@@ -450,10 +450,15 @@ md"""
 _At the end of this homework, you can see all of your filters applied to your webcam image!_
 """
 
+# ╔═╡ a85c4ba7-9c39-40d3-8979-03b75a58d841
+md"""
+#### Exercise 3.1 (Solution)
+"""
+
 # ╔═╡ 63e8d636-ee0b-11ea-173d-bd3327347d55
 function invert(color::AbstractRGB)
 	# your code here!
-	return missing
+	return RGB(1-color.r, 1-color.g, 1-color.b)
 end
 
 # ╔═╡ 2cc2f84e-ee0d-11ea-373b-e7ad3204bb00
@@ -475,7 +480,7 @@ invert(color_red)
 md"👉 Can you invert the picture of Philip?"
 
 # ╔═╡ 943103e2-ee0b-11ea-33aa-75a8a1529931
-philip_inverted = missing # replace `missing` with your code!
+philip_inverted = invert.(philip)
 
 # ╔═╡ 55b138b7-19fb-4da1-9eb1-1e8304528251
 md"""
@@ -488,10 +493,14 @@ md"""
 👉 Look up the documentation on the `floor` function. Use it to write a function `quantize(x::Number)` that takes in a value $x$ (which you can assume is between 0 and 1) and "quantizes" it into bins of width 0.1. For example, check that 0.267 gets mapped to 0.2.
 """
 
+# ╔═╡ 5898d690-345e-42b3-be8d-c523aafe4548
+md"""
+#### Exercise 3.2 (Solution)
+"""
+
 # ╔═╡ fbd1638d-8d7a-4d12-aff9-9c160cc3fd74
 function quantize(x::Number)
-	# your code here!
-	return missing
+	return  floor(x*10)/10
 end
 
 # ╔═╡ 7720740e-2d2b-47f7-98fd-500ed3eee479
@@ -543,10 +552,15 @@ Here, `::AbstractRGB` is a **type annotation**. This ensures that this version o
 The method you write should return a new `RGB` object, in which each component ($r$, $g$ and $b$) are quantized. Use your previous method for `quantize`!
 """
 
+# ╔═╡ 6f1f2858-c1e8-4405-8844-3fc65865e619
+md"""
+#### Exercise 3.3 (Solution)
+"""
+
 # ╔═╡ 04e6b486-ceb7-45fe-a6ca-733703f16357
 function quantize(color::AbstractRGB)
-	# your code here!
-	return missing
+	# Apply quantize of float numbers to every RGB element
+	return RGB(quantize(color.r), quantize(color.g), quantize(color.b))
 end
 
 # ╔═╡ f6bf64da-ee07-11ea-3efb-05af01b14f67
@@ -555,10 +569,15 @@ md"""
 👉 Write a method `quantize(image::AbstractMatrix)` that quantizes an image by quantizing each pixel in the image. (You may assume that the matrix is a matrix of color objects.)
 """
 
+# ╔═╡ aebaab0d-8018-4b19-ad95-749020ff1293
+md"""
+#### Exercise 3.4 (Solution)
+"""
+
 # ╔═╡ 13e9ec8d-f615-4833-b1cf-0153010ccb65
 function quantize(image::AbstractMatrix)
-	# your code here!
-	return missing
+	# Apply quantize to every pixel RGB of the image
+	return quantize.(image)
 end
 
 # ╔═╡ f6a655f8-ee07-11ea-13b6-43ca404ddfc7
@@ -576,10 +595,17 @@ md"""
 👉 Write a function `noisify(x::Number, s)` to add randomness of intensity $s$ to a value $x$, i.e. to add a random value between $-s$ and $+s$ to $x$. If the result falls outside the range $[0, 1]$ you should "clamp" it to that range. (Julia has a built-in `clamp` function, or you can write your own function.)
 """
 
+# ╔═╡ 9c9527bd-2935-4377-ba11-14fec749ac30
+md"""
+#### Exercise 3.5 (Solution)
+"""
+
 # ╔═╡ f38b198d-39cf-456f-a841-1ba08f206010
 function noisify(x::Number, s)
-	# your code here!
-	return missing
+	# generate a random number in the interval (-s, s) with steps of 0.01
+	intensity = rand(-s:0.01:s, 1)
+	# Return the value clamped to the interval (0, 1)
+	return clamp(x + intensity[1], 0, 1)
 end
 
 # ╔═╡ f6fc1312-ee07-11ea-39a0-299b67aee3d8
@@ -591,8 +617,12 @@ Use your previous method for `noisify`. _(Remember that Julia chooses which meth
 
 # ╔═╡ db4bad9f-df1c-4640-bb34-dd2fe9bdce18
 function noisify(color::AbstractRGB, s)
-	# your code here!
-	return missing
+	# Add noise to the individual channels
+	r = noisify(color.r, s)
+	g = noisify(color.g, s)
+	b = noisify(color.b, s)
+	# Values with noise
+	return RGB(r, g, b)
 end
 
 # ╔═╡ 0000b7f8-4c43-4dd8-8665-0dfe59e74c0a
@@ -611,12 +641,30 @@ md"""
 > 1. you can use function broadcasting over a array
 > 1. you can use _**array comprehension**_!
 >
-> The third option you are about to see demonstrated below and following the following syntax:
+> You are about to see the third option demonstrated below and following the following syntax:
 >
-> ```[function_to_apply(args) for args in some_iterable_of_your_choice]```
+> ```[f(args) for args in iterable]```
+>
+> Where:
+> - `f(...)` is the function to apply.
+> - `args` the arguments of the function `f`.
+> - `iterable` is some iterable of your choice like, an array, string, etc.
 >
 > This creates a new iterable that matches what you iterate through in the second part of the comprehension. Below is an example with `for` loops through two iterables that creates a 2-dimensional `Array`.
 """
+
+# ╔═╡ 7ebdc0ad-c513-405a-a5d4-8158bbabdcd7
+function myfun(val, add)
+	return val + add
+end
+
+# ╔═╡ f7318f06-31e6-4969-8189-fb9fd2b88bbe
+[
+	myfun(1, add) for add in 10:10:50, row in 1:2
+]
+
+# ╔═╡ b1ce412d-caf7-4bc9-acde-7b47c35b42bc
+color_red
 
 # ╔═╡ f70823d2-ee07-11ea-2bb3-01425212aaf9
 md"""
@@ -625,8 +673,7 @@ md"""
 
 # ╔═╡ 21a5885d-00ab-428b-96c3-c28c98c4ca6d
 function noisify(image::AbstractMatrix, s)
-	# your code here!
-	return missing
+	return noisify.(image, s)
 end
 
 # ╔═╡ 1ea53f41-b791-40e2-a0f8-04e13d856829
@@ -640,7 +687,7 @@ noisify(0.5, 0.1) # edit this test case!
 	noisify(color_red, strength)
 	for 
 		strength in 0 : 0.05 : 1,
-		row in 1:10
+		row in 1:2
 ]'
 
 # ╔═╡ d896b7fd-20db-4aa9-bbcf-81b1cd44ec46
@@ -651,7 +698,7 @@ Move the slider below to set the amount of noise applied to the image of Philip.
 """
 
 # ╔═╡ e70a84d4-ee0c-11ea-0640-bf78653ba102
-@bind philip_noise Slider(0:0.01:1, show_value=true)
+@bind philip_noise Slider(0:0.01:4, show_value=true)
 
 # ╔═╡ ac15e0d0-ee0c-11ea-1eaf-d7f88b5df1d7
 noisify(philip_head, philip_noise)
@@ -677,7 +724,7 @@ You may need noise intensities larger than 1. Why?
 
 # ╔═╡ bdc2df7c-ee0c-11ea-2e9f-7d2c085617c1
 answer_about_noise_intensity = md"""
-The image is unrecognisable with intensity ...
+The image is unrecognisable with intensity 4. With intensity 4 it is very hard to recognize the picture.
 """
 
 # ╔═╡ e87e0d14-43a5-490d-84d9-b14ece472061
@@ -685,27 +732,52 @@ md"""
 ### Results
 """
 
+# ╔═╡ 8f3a85a4-a73b-46e8-882a-ee623ac8b6d2
+img = load("./image.jpg")
+
+# ╔═╡ e068b13e-0858-44aa-a240-decd9894631f
+md"""
+### Results
+"""
+
+# ╔═╡ 3bf4531c-51e5-4144-bc06-ef0eb9d12ff1
+mean_color(img)
+
+# ╔═╡ b8c1010b-506f-4944-a89f-2341dcffa5aa
+invert.(img)
+
+# ╔═╡ 1a71938c-12be-4f75-88d7-95655f9133ba
+quantize(img)
+
+# ╔═╡ 918a68bc-8d58-4a7e-885d-b8691c330f39
+noisify(img, 0.5)
+
 # ╔═╡ ee5f21fb-1076-42b6-8926-8bbb6ed0ad67
 function custom_filter(pixel::AbstractRGB)
-	
-	# your code here!
-	
-	return pixel
+	if pixel.r > pixel.g && pixel.r > pixel.b
+		return RGB(pixel.r, 0, 0)
+	elseif pixel.g > pixel.r && pixel.g > pixel.b
+		return RGB(0, pixel.g, 0)
+	elseif pixel.b > pixel.r && pixel.b > pixel.g
+		return RGB(0, 0, pixel.b)
+	else
+		return RGB(1,1,1)
+	end
 end
 
 # ╔═╡ 9e5a08dd-332a-486b-94ab-15c49e72e522
 function custom_filter(image::AbstractMatrix)
-	
 	return custom_filter.(image)
 end
 
-# ╔═╡ 8ffe16ce-ee20-11ea-18bd-15640f94b839
-if student.kerberos_id === "jazz"
-	md"""
-!!! danger "Oops!"
-    **Before you submit**, remember to fill in your name and kerberos ID at the top of this notebook!
-	"""
-end
+# ╔═╡ 065c5548-acb8-4629-a9b9-2bb31d33b325
+[
+	invert.(img)      quantize(img)
+	noisify(img, .5)  custom_filter(img)
+]
+
+# ╔═╡ 8917529e-fa7a-412b-8aea-54f92f6270fa
+custom_filter(img)
 
 # ╔═╡ 756d150a-b7bf-4bf5-b372-5b0efa80d987
 md"## Function library
@@ -1085,6 +1157,12 @@ $(bigbreak)
 ### Camera input
 """
 
+# ╔═╡ 1a2ec555-18f4-4daa-add3-03bc4b72dfb9
+md"""
+$(bigbreak)
+### Image input
+"""
+
 # ╔═╡ 87dabfd2-461e-4769-ad0f-132cb2370b88
 md"""
 $(bigbreak)
@@ -1359,9 +1437,6 @@ noisify(cam_image, .5)
 	invert.(cam_image)      quantize(cam_image)
 	noisify(cam_image, .5)  custom_filter(cam_image)
 ]
-
-# ╔═╡ 8917529e-fa7a-412b-8aea-54f92f6270fa
-custom_filter(cam_image)
 
 # ╔═╡ 83eb9ca0-ed68-11ea-0bc5-99a09c68f867
 md"_homework 1, version 9_"
@@ -2327,6 +2402,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─4d0158d0-ee0d-11ea-17c3-c169d4284acb
 # ╟─5f6635b4-63ed-4a62-969c-bd4084a8202f
 # ╟─f6cc03a0-ee07-11ea-17d8-013991514d42
+# ╟─a85c4ba7-9c39-40d3-8979-03b75a58d841
 # ╠═63e8d636-ee0b-11ea-173d-bd3327347d55
 # ╟─80a4cb23-49c9-4446-a3ec-b2203128dc27
 # ╟─2cc2f84e-ee0d-11ea-373b-e7ad3204bb00
@@ -2338,6 +2414,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═943103e2-ee0b-11ea-33aa-75a8a1529931
 # ╟─55b138b7-19fb-4da1-9eb1-1e8304528251
 # ╟─f68d4a36-ee07-11ea-0832-0360530f102e
+# ╟─5898d690-345e-42b3-be8d-c523aafe4548
 # ╠═fbd1638d-8d7a-4d12-aff9-9c160cc3fd74
 # ╠═f6a655f8-ee07-11ea-13b6-43ca404ddfc7
 # ╟─c905b73e-ee1a-11ea-2e36-23b8e73bfdb6
@@ -2347,15 +2424,18 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─23fcd65f-0182-41f3-80ec-d85b05136c47
 # ╠═5055b74c-b98d-41fa-a0d8-cb36200d82cc
 # ╠═8db17b2b-0cf9-40ba-8f6f-2e53be7b6355
-# ╟─a8a597e0-a01c-40cd-9902-d56430afd938
+# ╠═a8a597e0-a01c-40cd-9902-d56430afd938
 # ╟─f6b218c0-ee07-11ea-2adb-1968c4fd473a
+# ╟─6f1f2858-c1e8-4405-8844-3fc65865e619
 # ╠═04e6b486-ceb7-45fe-a6ca-733703f16357
 # ╟─a6d9635b-85ed-4590-ad09-ca2903ea8f1d
 # ╟─f6bf64da-ee07-11ea-3efb-05af01b14f67
+# ╟─aebaab0d-8018-4b19-ad95-749020ff1293
 # ╠═13e9ec8d-f615-4833-b1cf-0153010ccb65
 # ╟─25dad7ce-ee0b-11ea-3e20-5f3019dd7fa3
 # ╠═9751586e-ee0c-11ea-0cbb-b7eda92977c9
 # ╟─f6d6c71a-ee07-11ea-2b63-d759af80707b
+# ╟─9c9527bd-2935-4377-ba11-14fec749ac30
 # ╠═f38b198d-39cf-456f-a841-1ba08f206010
 # ╠═1ea53f41-b791-40e2-a0f8-04e13d856829
 # ╟─31ef3710-e4c9-4aa7-bd8f-c69cc9a977ee
@@ -2366,6 +2446,9 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═774b4ce6-ee1b-11ea-2b48-e38ee25fc89b
 # ╠═7e4aeb70-ee1b-11ea-100f-1952ba66f80f
 # ╟─48de5bc2-72d3-11eb-3fd9-eff2b686cb75
+# ╠═7ebdc0ad-c513-405a-a5d4-8158bbabdcd7
+# ╠═f7318f06-31e6-4969-8189-fb9fd2b88bbe
+# ╠═b1ce412d-caf7-4bc9-acde-7b47c35b42bc
 # ╠═8e848279-1b3e-4f32-8c0c-45693d12de96
 # ╟─f70823d2-ee07-11ea-2bb3-01425212aaf9
 # ╠═21a5885d-00ab-428b-96c3-c28c98c4ca6d
@@ -2375,8 +2458,8 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─9604bc44-ee1b-11ea-28f8-7f7af8d0cbb2
 # ╟─f714699e-ee07-11ea-08b6-5f5169861b57
 # ╠═bdc2df7c-ee0c-11ea-2e9f-7d2c085617c1
-# ╟─4139ee66-ee0a-11ea-2282-15d63bcca8b8
-# ╠═20402780-426b-4caa-af8f-ff1e7787b7f9
+# ╠═4139ee66-ee0a-11ea-2282-15d63bcca8b8
+# ╟─20402780-426b-4caa-af8f-ff1e7787b7f9
 # ╟─ed9fb2ac-2680-42b7-9b00-591e45a5e105
 # ╟─e87e0d14-43a5-490d-84d9-b14ece472061
 # ╠═d38c6958-9300-4f7a-89cf-95ca9e899c13
@@ -2384,12 +2467,19 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═54c83589-b8c6-422a-b5e9-d8e0ee72a224
 # ╠═18e781f8-66f3-4216-bc84-076a08f9f3fb
 # ╠═ebf3193d-8c8d-4425-b252-45067a5851d9
+# ╟─1a2ec555-18f4-4daa-add3-03bc4b72dfb9
+# ╠═8f3a85a4-a73b-46e8-882a-ee623ac8b6d2
+# ╟─e068b13e-0858-44aa-a240-decd9894631f
+# ╠═3bf4531c-51e5-4144-bc06-ef0eb9d12ff1
+# ╠═b8c1010b-506f-4944-a89f-2341dcffa5aa
+# ╠═1a71938c-12be-4f75-88d7-95655f9133ba
+# ╠═918a68bc-8d58-4a7e-885d-b8691c330f39
+# ╠═065c5548-acb8-4629-a9b9-2bb31d33b325
 # ╟─87dabfd2-461e-4769-ad0f-132cb2370b88
 # ╠═8917529e-fa7a-412b-8aea-54f92f6270fa
 # ╠═ee5f21fb-1076-42b6-8926-8bbb6ed0ad67
 # ╠═9e5a08dd-332a-486b-94ab-15c49e72e522
 # ╟─91f4778e-ee20-11ea-1b7e-2b0892bd3c0f
-# ╟─8ffe16ce-ee20-11ea-18bd-15640f94b839
 # ╟─5842895a-ee10-11ea-119d-81e4c4c8c53b
 # ╟─756d150a-b7bf-4bf5-b372-5b0efa80d987
 # ╟─4bc94bec-da39-4f8a-82ee-9953ed73b6a4
