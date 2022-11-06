@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.14
 
 using Markdown
 using InteractiveUtils
@@ -22,6 +22,9 @@ begin
 	using HypertextLiteral
 end
 
+# ╔═╡ 8ef13896-ed68-11ea-160b-3550eeabbd7d
+TableOfContents()
+
 # ╔═╡ ac8ff080-ed61-11ea-3650-d9df06123e1f
 md"""
 
@@ -35,23 +38,6 @@ This notebook contains _built-in, live answer checks_! In some exercises you wil
 _For MIT students:_ there will also be some additional (secret) test cases that will be run as part of the grading process, and we will look at your notebook and write comments.
 
 Feel free to ask questions!
-"""
-
-# ╔═╡ 911ccbce-ed68-11ea-3606-0384e7580d7c
-# edit the code below to set your name and kerberos ID (i.e. email without @mit.edu)
-
-student = (name = "Jazzy Doe", kerberos_id = "jazz")
-
-# press the ▶ button in the bottom right of this cell to run your edits
-# or use Shift+Enter
-
-# you might need to wait until all other cells in this notebook have completed running. 
-# scroll down the page to see what's up
-
-# ╔═╡ 8ef13896-ed68-11ea-160b-3550eeabbd7d
-md"""
-
-Submission by: **_$(student.name)_** ($(student.kerberos_id)@mit.edu)
 """
 
 # ╔═╡ 5f95e01a-ee0a-11ea-030c-9dba276aba92
@@ -79,8 +65,13 @@ $(html"<br>")
 👉 Make a random vector `random_vect` of length 10 using the `rand` function.
 """
 
+# ╔═╡ e982b8e1-6a45-4311-a8d5-153cba6c4aef
+md"""
+#### Exercise 1.1 (Solution)
+"""
+
 # ╔═╡ f51333a6-eded-11ea-34e6-bfbb3a69bcb0
-random_vect = missing # replace `missing` with your code!
+random_vect = rand(Float64, 10)
 
 # ╔═╡ 5da8cbe8-eded-11ea-2e43-c5b7cc71e133
 begin
@@ -98,10 +89,19 @@ colored_line(random_vect)
 md"#### Exerise 1.2
 👉 Make a function `my_sum` using a `for` loop, which computes the total of a vector of numbers."
 
+# ╔═╡ 29cc011f-992b-4687-b6ed-4d2f419b9c19
+md"""
+#### Exercise 1.2 (Solution)
+"""
+
 # ╔═╡ bd907ee1-5253-4cae-b5a5-267dac24362a
 function my_sum(xs)
-	# your code here!
-	return missing
+	len = length(xs)
+	total = 0
+	for i in 1:len
+		total += xs[i]
+	end
+	return total
 end
 
 # ╔═╡ 6640110a-d171-4b32-8d12-26979a36b718
@@ -111,10 +111,15 @@ my_sum([1,2,3])
 md"#### Exerise 1.3
 👉 Use your `my_sum` function to write a function `mean`, which computes the mean/average of a vector of numbers."
 
+# ╔═╡ d19947ff-3a61-47e9-badd-934b53950b29
+md"""
+#### Exercise 1.3 (Solution)
+$$mean = \frac{totalsum}{elements}$$
+"""
+
 # ╔═╡ 0ffa8354-edee-11ea-2883-9d5bfea4a236
 function mean(xs)
-	# your code here!
-	return missing
+	return my_sum(xs)/length(xs)
 end
 
 # ╔═╡ 1f104ce4-ee0e-11ea-2029-1d9c817175af
@@ -124,7 +129,7 @@ mean([1, 2, 3])
 md"👉 Define `m` to be the mean of `random_vect`."
 
 # ╔═╡ 2a391708-edee-11ea-124e-d14698171b68
-m = missing # replace `missing` with your code!
+m = mean(random_vect)
 
 # ╔═╡ e2863d4c-edef-11ea-1d67-332ddca03cc4
 md"""#### Exerise 1.4
@@ -147,10 +152,17 @@ md"""
 
 """
 
+# ╔═╡ 02413d27-093b-48c7-a2d9-664723e1a8d8
+md"""
+#### Exercise 1.4 (Solution)
+"""
+
 # ╔═╡ ec5efe8c-edef-11ea-2c6f-afaaeb5bc50c
 function demean(xs)
-	# your code here!
-	return missing
+	# get the mean of the current vector
+	mn = mean(xs)
+	# use the dot to cast the scalar to every vector element
+	return xs .- mn
 end
 
 # ╔═╡ d6ddafdd-1a44-48c7-b49a-554073cdf331
@@ -188,10 +200,16 @@ md"""
 - all other elements are `0`.
 """
 
+# ╔═╡ bea314f3-b60e-472c-8040-dc0656ecfcb7
+md"""
+#### Exercise 1.5 (Solution)
+"""
+
 # ╔═╡ b6b65b94-edf0-11ea-3686-fbff0ff53d08
 function create_bar()
-	# your code here!
-	return missing
+	v = zeros(100)
+	v[40:60] .= 1
+	return v
 end
 
 # ╔═╡ 4a5e9d2c-dd90-4bb0-9e31-3f5c834406b4
@@ -252,14 +270,18 @@ RGB(0.1, 0.4, 0.7)
 
 # ╔═╡ f52e4914-2926-4a42-9e45-9caaace9a7db
 md"""
-#### Exerise 2.1
+#### Exercise 2.1
 👉 Write a function **`get_red`** that takes a single pixel, and returns the value of its red channel.
+"""
+
+# ╔═╡ f438bd6a-3a5f-4423-a9e3-aafaf208ca66
+md"""
+#### Exercise 2.1 (Solution)
 """
 
 # ╔═╡ a8b2270a-600c-4f83-939e-dc5ab35f4735
 function get_red(pixel::AbstractRGB)
-	# your code here!
-	return missing
+	return pixel.r
 end
 
 # ╔═╡ c320b39d-4cea-4fa1-b1ce-053c898a67a6
@@ -267,14 +289,20 @@ get_red(RGB(0.8, 0.1, 0.0))
 
 # ╔═╡ d8cf9bd5-dbf7-4841-acf9-eef7e7cabab3
 md"""
-#### Exerise 2.2
+#### Exercise 2.2
 👉 Write a function **`get_reds`** (note the extra `s`) that accepts a 2D color array called `image`, and returns a 2D array with the red channel value of each pixel. (The result should be a 2D array of _numbers_.) Use your function `get_red` from the previous exercise.
+"""
+
+# ╔═╡ a6d2f470-8a82-44c5-9a07-9c6503356dbb
+md"""
+#### Exercise 2.2 (Solution)
 """
 
 # ╔═╡ ebe1d05c-f6aa-437d-83cb-df0ba30f20bf
 function get_reds(image::AbstractMatrix)
-	# your code here!
-	return missing
+	# Use the dot to cast the function to every array element
+	# in this case, pixels
+	return get_red.(image)
 end
 
 # ╔═╡ c427554a-6f6a-43f1-b03b-f83239887cee
@@ -285,7 +313,7 @@ md"""
 
 Great! By extracting the red channel value of each pixel, we get a 2D array of numbers. We went from an image (2D array of RGB colors) to a matrix (2D array of numbers).
 
-#### Exerise 2.3
+#### Exercise 2.3
 Let's try to visualize this matrix. Right now, it is displayed in text form, but because the image is quite large, most rows and columns don't fit on the screen. Instead, a better way to visualize it is to **view a number matrix as an image**.
 
 This is easier than you might think! We just want to map each number to an `RGB` object, and the result will be a 2D array of `RGB` objects, which Julia will display as an image.
@@ -309,18 +337,90 @@ md"""
 Use the ➕ button at the bottom left of this cell to add more cells.
 """
 
-# ╔═╡ 21ba6e75-55a2-4614-9b5d-ea6378bf1d98
+# ╔═╡ faa6150f-6d77-4f58-b3b8-ca54d4fde5a4
+md"""
+#### Exercise 2.3 (Solutions)
+"""
 
+# ╔═╡ 21ba6e75-55a2-4614-9b5d-ea6378bf1d98
+function red_elements(image)
+	red_vals = get_reds(image)
+	return value_as_color.(red_vals)
+end
+
+# ╔═╡ 25a0b616-2d03-42c2-a17d-a5116b794661
+red_elements(philip_head)
 
 # ╔═╡ f7825c18-ff28-4e23-bf26-cc64f2f5049a
 md"""
 
-#### Exerise 2.4
+#### Exercise 2.4
 👉 Write four more functions, `get_green`, `get_greens`, `get_blue` and `get_blues`, to be the equivalents of `get_red` and `get_reds`. Use the ➕ button at the bottom left of this cell to add new cells.
 """
 
-# ╔═╡ d994e178-78fd-46ab-a1bc-a31485423cad
+# ╔═╡ feb65e4c-7729-4ce1-ad53-27215a269fa9
+md"""
+#### Exercise 2.4 (Solution)
+"""
 
+# ╔═╡ 15a466eb-6b13-402b-a579-41aaa18ffb9f
+md"""**Define Green functions**"""
+
+# ╔═╡ d994e178-78fd-46ab-a1bc-a31485423cad
+begin
+	# Get green
+	function get_green(pixel::AbstractRGB)
+		return pixel.g
+	end
+	# Get Greens
+	function get_greens(image::AbstractMatrix)
+		return get_green.(image)
+	end
+	# green as color
+	function green_as_color(x)
+		return RGB(0, x, 0)
+	end
+	# Matrix to Image
+	function green_elements(image)
+		green_vals = get_greens(image)
+		return green_as_color.(green_vals)
+	end
+end
+
+# ╔═╡ 2f7d0449-7737-4199-93a8-41d9efa17d51
+md"""**Define Blue Functions**"""
+
+# ╔═╡ 5c2c6c82-1d17-4876-bb43-50888e77d28b
+begin
+	# Get Blue
+	function get_blue(pixel::AbstractRGB)
+		return pixel.b
+	end
+	# Get Blues
+	function get_blues(image::AbstractMatrix)
+		return get_blue.(image)
+	end
+	# Blue as a color
+	function blue_as_color(x)
+		return RGB(0, 0, x)
+	end
+	# Matrix to blue image
+	function blue_elements(image)
+		blue_vals = get_blues(image)
+		return blue_as_color.(blue_vals)
+	end
+end
+
+# ╔═╡ ff85fd3b-7d18-40e5-8e79-dad8cdc3c9f1
+md"""
+##### Blue and Green filters
+"""
+
+# ╔═╡ a237bc12-2545-4f8d-bc76-c1f48eeec76b
+green_elements(philip_head)
+
+# ╔═╡ 2259c54c-2fa2-4943-96e3-fb6dafcbb4c3
+blue_elements(philip_head)
 
 # ╔═╡ c54ccdea-ee05-11ea-0365-23aaf053b7d7
 md"""
@@ -330,8 +430,16 @@ md"""
 
 # ╔═╡ f6898df6-ee07-11ea-2838-fde9bc739c11
 function mean_color(image)
-	# your code here!
-	return missing
+	# Obtain the color
+	red_matrix = get_reds(image)
+	green_matrix = get_greens(image)
+	blue_matrix = get_blues(image)
+	# Get the mean of every color
+	red_mean = mean(red_matrix)
+	green_mean = mean(green_matrix)
+	blue_mean = mean(blue_matrix)
+	# Return the color values in a pixel format
+	return RGB(red_mean, green_mean, blue_mean)
 end
 
 # ╔═╡ 5be9b144-ee0d-11ea-2a8d-8775de265a1d
@@ -2126,9 +2234,8 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 """
 
 # ╔═╡ Cell order:
-# ╟─8ef13896-ed68-11ea-160b-3550eeabbd7d
+# ╠═8ef13896-ed68-11ea-160b-3550eeabbd7d
 # ╟─ac8ff080-ed61-11ea-3650-d9df06123e1f
-# ╠═911ccbce-ed68-11ea-3606-0384e7580d7c
 # ╟─5f95e01a-ee0a-11ea-030c-9dba276aba92
 # ╠═65780f00-ed6b-11ea-1ecf-8b35523a7ac0
 # ╟─54056a02-ee0a-11ea-101f-47feb6623bec
@@ -2136,17 +2243,20 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─467856dc-eded-11ea-0f83-13d939021ef3
 # ╠═56ced344-eded-11ea-3e81-3936e9ad5777
 # ╟─ad6a33b0-eded-11ea-324c-cfabfd658b56
+# ╟─e982b8e1-6a45-4311-a8d5-153cba6c4aef
 # ╠═f51333a6-eded-11ea-34e6-bfbb3a69bcb0
 # ╟─b18e2c54-edf1-11ea-0cbf-85946d64b6a2
-# ╠═397941fc-edee-11ea-33f2-5d46c759fbf7
+# ╟─397941fc-edee-11ea-33f2-5d46c759fbf7
 # ╟─b1d5ca28-edf6-11ea-269e-75a9fb549f1d
 # ╟─5da8cbe8-eded-11ea-2e43-c5b7cc71e133
 # ╟─77adb065-bfd4-4680-9c2a-ad4d92689dbf
+# ╠═29cc011f-992b-4687-b6ed-4d2f419b9c19
 # ╠═bd907ee1-5253-4cae-b5a5-267dac24362a
 # ╠═6640110a-d171-4b32-8d12-26979a36b718
 # ╟─e0bfc973-2808-4f84-b065-fb3d05401e30
 # ╟─24090306-7395-4f2f-af31-34f7486f3945
 # ╟─cf738088-eded-11ea-2915-61735c2aa990
+# ╠═d19947ff-3a61-47e9-badd-934b53950b29
 # ╠═0ffa8354-edee-11ea-2883-9d5bfea4a236
 # ╠═1f104ce4-ee0e-11ea-2029-1d9c817175af
 # ╟─38dc80a0-edef-11ea-10e9-615255a4588c
@@ -2155,13 +2265,15 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─2b1ccaca-edee-11ea-34b0-c51659f844d0
 # ╟─e2863d4c-edef-11ea-1d67-332ddca03cc4
 # ╟─ea8d92f8-159c-4161-8c54-bab7bc00f290
+# ╟─02413d27-093b-48c7-a2d9-664723e1a8d8
 # ╠═ec5efe8c-edef-11ea-2c6f-afaaeb5bc50c
 # ╟─d6ddafdd-1a44-48c7-b49a-554073cdf331
 # ╟─29e10640-edf0-11ea-0398-17dbf4242de3
 # ╠═1267e961-5b75-4b55-8080-d45316a03b9b
-# ╠═38155b5a-edf0-11ea-3e3f-7163da7433fb
+# ╟─38155b5a-edf0-11ea-3e3f-7163da7433fb
 # ╟─adf476d8-a334-4b35-81e8-cc3b37de1f28
 # ╟─a5f8bafe-edf0-11ea-0da3-3330861ae43a
+# ╟─bea314f3-b60e-472c-8040-dc0656ecfcb7
 # ╠═b6b65b94-edf0-11ea-3686-fbff0ff53d08
 # ╠═4a5e9d2c-dd90-4bb0-9e31-3f5c834406b4
 # ╟─d862fb16-edf1-11ea-36ec-615d521e6bc0
@@ -2183,10 +2295,12 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─c49ba901-d798-489a-963c-4cc113c7abfd
 # ╠═93451c37-77e1-4d4f-9788-c2a3da1401ee
 # ╟─f52e4914-2926-4a42-9e45-9caaace9a7db
+# ╟─f438bd6a-3a5f-4423-a9e3-aafaf208ca66
 # ╠═a8b2270a-600c-4f83-939e-dc5ab35f4735
 # ╠═c320b39d-4cea-4fa1-b1ce-053c898a67a6
 # ╟─09102183-f9fb-4d89-b4f9-5d76af7b8e90
 # ╟─d8cf9bd5-dbf7-4841-acf9-eef7e7cabab3
+# ╟─a6d2f470-8a82-44c5-9a07-9c6503356dbb
 # ╠═ebe1d05c-f6aa-437d-83cb-df0ba30f20bf
 # ╠═c427554a-6f6a-43f1-b03b-f83239887cee
 # ╟─63ac142e-6d9d-4109-9286-030a02c900b4
@@ -2195,9 +2309,18 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═97c15896-6d99-4292-b7d7-4fcd2353656f
 # ╠═cbb9bf41-4c21-42c7-b0e0-fc1ce29e0eb1
 # ╟─3f1a670b-44c2-4cab-909c-65f4ae9ed14b
+# ╟─faa6150f-6d77-4f58-b3b8-ca54d4fde5a4
 # ╠═21ba6e75-55a2-4614-9b5d-ea6378bf1d98
+# ╠═25a0b616-2d03-42c2-a17d-a5116b794661
 # ╟─f7825c18-ff28-4e23-bf26-cc64f2f5049a
+# ╟─feb65e4c-7729-4ce1-ad53-27215a269fa9
+# ╟─15a466eb-6b13-402b-a579-41aaa18ffb9f
 # ╠═d994e178-78fd-46ab-a1bc-a31485423cad
+# ╟─2f7d0449-7737-4199-93a8-41d9efa17d51
+# ╠═5c2c6c82-1d17-4876-bb43-50888e77d28b
+# ╟─ff85fd3b-7d18-40e5-8e79-dad8cdc3c9f1
+# ╠═a237bc12-2545-4f8d-bc76-c1f48eeec76b
+# ╠═2259c54c-2fa2-4943-96e3-fb6dafcbb4c3
 # ╟─c54ccdea-ee05-11ea-0365-23aaf053b7d7
 # ╠═f6898df6-ee07-11ea-2838-fde9bc739c11
 # ╠═5be9b144-ee0d-11ea-2a8d-8775de265a1d
