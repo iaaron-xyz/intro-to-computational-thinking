@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.14
 
 using Markdown
 using InteractiveUtils
@@ -26,6 +26,9 @@ end
 # ╔═╡ 83eb9ca0-ed68-11ea-0bc5-99a09c68f867
 md"_homework 2, version 2_"
 
+# ╔═╡ 1ffec1ca-4661-4591-adab-f9bbf1bbe96f
+TableOfContents(title="Homework 2")
+
 # ╔═╡ ac8ff080-ed61-11ea-3650-d9df06123e1f
 md"""
 
@@ -39,23 +42,6 @@ This notebook contains _built-in, live answer checks_! In some exercises you wil
 _For MIT students:_ there will also be some additional (secret) test cases that will be run as part of the grading process, and we will look at your notebook and write comments.
 
 Feel free to ask questions!
-"""
-
-# ╔═╡ 911ccbce-ed68-11ea-3606-0384e7580d7c
-# edit the code below to set your name and kerberos ID (i.e. email without @mit.edu)
-
-student = (name = "SOLUTIONS", kerberos_id = "SOLUTIONS")
-
-# press the ▶ button in the bottom right of this cell to run your edits
-# or use Shift+Enter
-
-# you might need to wait until all other cells in this notebook have completed running. 
-# scroll down the page to see what's up
-
-# ╔═╡ 8ef13896-ed68-11ea-160b-3550eeabbd7d
-md"""
-
-Submission by: **_$(student.name)_** ($(student.kerberos_id)@mit.edu)
 """
 
 # ╔═╡ 5f95e01a-ee0a-11ea-030c-9dba276aba92
@@ -1886,9 +1872,8 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 
 # ╔═╡ Cell order:
 # ╟─83eb9ca0-ed68-11ea-0bc5-99a09c68f867
-# ╟─8ef13896-ed68-11ea-160b-3550eeabbd7d
+# ╠═1ffec1ca-4661-4591-adab-f9bbf1bbe96f
 # ╟─ac8ff080-ed61-11ea-3650-d9df06123e1f
-# ╠═911ccbce-ed68-11ea-3606-0384e7580d7c
 # ╟─5f95e01a-ee0a-11ea-030c-9dba276aba92
 # ╠═65780f00-ed6b-11ea-1ecf-8b35523a7ac0
 # ╟─54056a02-ee0a-11ea-101f-47feb6623bec

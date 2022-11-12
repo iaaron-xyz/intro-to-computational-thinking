@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.11
+# v0.19.14
 
 using Markdown
 using InteractiveUtils
@@ -24,7 +24,7 @@ begin
 
 	# Small patch to make images look more crisp:
 	# https://github.com/JuliaImages/ImageShow.jl/pull/50
-	Base.showable(::MIME"text/html", ::AbstractMatrix{<:Colorant}) = false
+	# Base.showable(::MIME"text/html", ::AbstractMatrix{<:Colorant}) = false
 end
 
 # ╔═╡ c09c8ba0-887e-11eb-07e3-71377ec0e708
@@ -129,7 +129,7 @@ md"""
 f₁(x) = x^2 # subscript unicode:   \_1 + <tab>   
 
 # ╔═╡ 81a00b78-76ab-11eb-072a-6b96847c2ce4
-f₁(6)
+f₁(11)
 
 # ╔═╡ 0f3ea780-3ac6-4778-a28e-1547223d166c
 md"""
@@ -141,7 +141,7 @@ md"""
 x->sin(x)
 
 # ╔═╡ 98498f84-76ab-11eb-23cf-857c776a9163
-(x->sin(x))(3*π/2)
+(x->sin(x))(π/2)
 
 # ╔═╡ ffa1d27e-3c53-4261-b2b7-29bae583c3d2
 md"""
@@ -150,7 +150,7 @@ md"""
 
 # ╔═╡ c6c860a6-76ab-11eb-1dec-1b2f179a0fa9
 # long form
-function f₃(x,α=3) # default parameter
+function f₃(x,α=3) # α default parameter
 	return x^α  # the "return" is optional
 end
 
@@ -169,7 +169,7 @@ md"""
 f₄(x;exp) = x^exp
 
 # ╔═╡ 87b99c8a-76ac-11eb-1c94-8f1ffe3be593
-f₄(2, exp=3)
+f₄(2, exp=4)
 
 # ╔═╡ 504076fc-76ac-11eb-30c3-bfa75c991cb2
 md"""
@@ -181,6 +181,11 @@ md"""
 ### 4.1.2 Automatic Differentiation of Univariates
 """
 
+# ╔═╡ 6139c4d9-8a6f-4c92-b038-ff44720b5ab5
+md"""
+$$f(x)$$
+"""
+
 # ╔═╡ fe01da74-76ac-11eb-12e3-8320340b6139
 md"""
 Automatic differentiation is a key enabling technology for machine learning and so much of scientific computing.  It derives the answer in a manner that is interestingly different from the symbolic differentiation of elementary calculus classes and the numerical differentiation of simple finite differences.  See the video at the end of this lecture. However, any method must go to the same final result, so...
@@ -188,7 +193,7 @@ Automatic differentiation is a key enabling technology for machine learning and 
 
 # ╔═╡ b818107d-a0f3-417c-a09f-1698de49e7ac
 md"""
-Remember:
+Remember, the way to solve a derivative in **symbolic** manner is:
 - $\frac{d}{dx} f_1(x) = \frac{d}{dx} x^2 = 2x$
 
 So, when $x=5$
@@ -201,6 +206,9 @@ ForwardDiff.derivative(f₁, 5) # the derivative of f₁=x² is 2x
 # ╔═╡ 06437040-76ae-11eb-0b1c-23a6470f41c8
 ForwardDiff.derivative( x->f₃(x,3), 5) # The derivative of f₃=x³ is 3x²
 
+# ╔═╡ 8b5ee122-e852-4bd8-bf03-0b02e5e5211f
+ForwardDiff.derivative((x->sin(x)), 0) # derivative of cos(x) is -sin(x)
+
 # ╔═╡ 28cd454c-76ae-11eb-0d1e-a56995100d59
 md"""
 Notice the use of anonymous functions to fix the parameter α=3
@@ -208,7 +216,7 @@ Notice the use of anonymous functions to fix the parameter α=3
 
 # ╔═╡ 38b51946-76ae-11eb-2c8a-e19b30bf42cb
 md"""
-In case you have forgotten what a derivative is, we remind you with a simple finite difference approximation:
+**In case you have forgotten what a derivative is, we remind you with a simple finite difference approximation**:
 """
 
 # ╔═╡ 632a1f8c-76ae-11eb-2088-15c3e3c0a210
@@ -222,29 +230,40 @@ end
 ϵ = 10.0^e
 
 # ╔═╡ ca1dfb8a-76b0-11eb-1323-d100bdeedc2d
-(sin(1+ϵ)-sin(1))/ϵ , cos(1), ForwardDiff.derivative(sin,1) # (limit definition, derivative result, derivative in Julia)
+(sin(1+ϵ)-sin(1))/ϵ, # limit definition - approximation
+cos(1), # derivative result
+ForwardDiff.derivative(sin,1) # Forward diferentiation
 
 # ╔═╡ f7df6cda-76b1-11eb-11e4-8d0af0349651
 md"""
 ### 4.1.3 Scalar Valued Multivariate Functions
 """
 
+# ╔═╡ a9f43fb2-2d89-432d-8359-d34356ed1811
+md"""
+$$f(x_1, x_2, x_3, ...)$$
+"""
+
 # ╔═╡ 63449b54-76b4-11eb-202f-3bda2f4cff4d
 md"""
 Sometimes we are interested in scalar valued functions of more than 1 variable.
 This can be written in Julia as a function of many variables or a function of
-a vector.
-e.g. $f_5(x) = 5\sin(x_1*x_2) + 2x_2/4x_3$ where $x=(x_1, x_2, x_3)$
+a vector, e.g. $f_5(x) = 5\sin(x_1*x_2) + 2x_2/4x_3$ where $x=(x_1, x_2, x_3)$
+"""
+
+# ╔═╡ 619be8ee-81ea-4ceb-a310-0816cebaf5de
+md"""
+#### you can define the function like this:
 """
 
 # ╔═╡ 8c6b0236-76b4-11eb-2acf-91da23bedf0e
 begin
-	f₅(v) = 5sin(v[1]*v[2]) + 2*v[2]/4v[3] # function of a vector
-	f₅(x,y,z) = 5sin(x*y) + 2*y/4z         # function of three scalar arguments
+	f₅(v) = 5sin(v[1]*v[2]) + 2*v[2]/4v[3] # function of a vector v
+	f₅(x,y,z) = 5sin(x*y) + 2*y/4z         # function of three scalar arguments x,y,z
 end
 
 # ╔═╡ a397d526-76b5-11eb-3cce-4374e33324d1
-f₅(1,2,3), f₅([1,2,3])
+f₅(1,2,3), f₅([1, 2, 3])
 
 # ╔═╡ 4a57d898-76b6-11eb-15ea-7be43393922c
 md"""
@@ -253,8 +272,8 @@ Better yet if you must write it the two ways ( you probably won't need to, but i
 
 # ╔═╡ bf23ab30-76b5-11eb-1adb-3d74a52cddfd
 begin
-	f₆( x,y,z)  = 5sin(x*y) + 2*y/4z
-	f₆( v ) = f₆(v[1],v[2],v[3])
+	f₆(x,y,z)  = 5sin(x*y) + 2*y/4z # Function definition using scalar variables
+	f₆(v) = f₆(v[1],v[2],v[3])      # Function definition using the original one
 end
 
 # ╔═╡ d5d4ac48-76b6-11eb-1687-ed853c2db7c9
@@ -262,11 +281,12 @@ f₆(1,2,3), f₆([1,2,3])
 
 # ╔═╡ 89b2d570-76ba-11eb-0389-813bbb33efea
 md"""
-There's one other julia idea that is a trick to make vector code more readable. If you give a tuple argument, the function works directly on vectors but is defined with readable letters.
+There's one other julia idea that is a trick to make vector code more readable. If you give a **tuple argument, the function works directly on vectors but is defined with readable letters**.
 """
 
 # ╔═╡ a8c28578-76ba-11eb-3f3f-af35ff0b6c74
-f₇((x,y,z)) = 5sin(x*y) + 2*y/4z # more readable then 5sin(v[1]*v[2]) + 2*v[2]/4v[3]
+# Notice the extra parenthesis
+f₇( (x,y,z) ) = 5sin(x*y) + 2*y/4z # more readable then 5sin(v[1]*v[2]) + 2*v[2]/4v[3]
 
 # ╔═╡ d9e07084-76ba-11eb-18ac-c58b1bc972ba
 f₇([1,2,3]) # this works with vector arguments, but not scalars (f₇(1,2,3) errros)
@@ -277,7 +297,7 @@ You can see that the functions $f_5$  and $f_6$ has two julia methods, one with 
 """
 
 # ╔═╡ 57b0cd3c-76b7-11eb-0ece-810f3a8ede00
-methods(f₅)
+methods(f₅), methods(f₆)
 
 # ╔═╡ 6d411cea-76b9-11eb-061b-87d472bc3bdd
 md"""
@@ -289,8 +309,24 @@ md"""
 In many applications, including machine learning, one needs to take derivatives of the function in every argument direction.  This is known as the *gradient*.  Automatic differentiation works again:
 """
 
+# ╔═╡ e979afe1-75b4-4943-a982-f5f0516e1297
+md"""
+#### Example 1: Solving $f_5$""" 
+
 # ╔═╡ ef06cfd8-76b7-11eb-1530-1fcd7e5c5992
 ForwardDiff.gradient(f₅,[1,2,3])
+
+# ╔═╡ 25ff75b5-4ca9-426a-8390-71a294ddad7c
+md"""
+The gradient for 3 dimensions can be written as:
+- $\nabla = (\partial_x, \partial_y, \partial_z)$
+
+Then, the last computation can be translated as:
+- $\nabla f_5(\boldsymbol{v}) = (\partial_x, \partial_y, \partial_z) f_5$
+
+And evaluate the result of that operation in 
+- $(1, 2, 3)$
+"""
 
 # ╔═╡ 051db7a0-76b8-11eb-14c7-531f42ef60b8
 md"""
@@ -300,15 +336,18 @@ $f_5(x) = 5\sin(x_1*x_2) + 2x_2/4x_3$
 
 # ╔═╡ 5f1afd24-76b8-11eb-36ab-9bbb3d73b930
 md"""
-One can check numerically by adding a small change to each of the arguments.m
+One can check numerically by adding a small change to each of the arguments.
 """
+
+# ╔═╡ aec36b4d-d14d-4839-82f3-b848bb9c862a
+ϵ
 
 # ╔═╡ 2705bf34-76b8-11eb-3aaa-d363085784ff
 begin
-	∂f₅∂x =  (f₅(1+ϵ, 2, 3  ) -f₅(1, 2, 3)) / ϵ
-	∂f₅∂y =  (f₅(1, 2+ϵ, 3  ) -f₅(1, 2, 3)) / ϵ
-	∂f₅∂z =  (f₅(1, 2,   3+ϵ) -f₅(1, 2, 3)) / ϵ
-	∇f = [ ∂f₅∂x , ∂f₅∂y, ∂f₅∂z]
+	∂f₅∂x =  (f₅(1+ϵ, 2, 3  ) -f₅(1, 2, 3)) / ϵ # Change in x
+	∂f₅∂y =  (f₅(1, 2+ϵ, 3  ) -f₅(1, 2, 3)) / ϵ # Change in y
+	∂f₅∂z =  (f₅(1, 2,   3+ϵ) -f₅(1, 2, 3)) / ϵ # Change in z
+	∇f = [ ∂f₅∂x , ∂f₅∂y, ∂f₅∂z]  # The gradient with the changes in x, y and z
 end
 
 # ╔═╡ dfb9d74c-76b8-11eb-24ff-e521f1294a6f
@@ -343,14 +382,26 @@ All the functions below are designed to work on vectors of size 2.
 
 # ╔═╡ d364f91a-76b9-11eb-1807-75e733940d53
 begin
-	 idy((x,y)) = [x,y]
-	 lin1((x,y)) =  [ 2x + 3y, -5x+4x ]
-	 scalex(α) = ((x,y),) -> (α*x, y) # scalex is the function, that takes a vector
-	                                  # and scale it in the x direction α times.
-	 scaley(α) = ((x,y),) -> (x,   α*y)
-	 rot(θ) = ((x,y),) -> [cos(θ)*x + sin(θ)*y, -sin(θ)*x + cos(θ)*y]
-	 shear(α) = ((x,y),) -> [x+α*y,y]
-	 genlin(a,b,c,d) = ((x,y),) -> [ a*x + b*y ; c*x + d*y ]
+	# Identity function - returns the same values
+	idy((x,y)) = [x,y]
+
+	# Linear transformation of x and y
+	lin1((x,y)) =  [ 2x + 3y, -5x+4x ]
+
+	# Scales the variable x by α times
+	scalex(α) = ((x,y),) -> (α*x, y)
+
+	# Scales the variable y by α times
+	scaley(α) = ((x,y),) -> (x,   α*y)
+
+	# Apply a rotation of angle θ to the points x and y
+	rot(θ) = ((x,y),) -> [cos(θ)*x + sin(θ)*y, -sin(θ)*x + cos(θ)*y]
+
+	# Shear the coordinates in the x direction
+	shear(α) = ((x,y),) -> [x+α*y,y]
+
+	# General linear transformation
+	genlin(a,b,c,d) = ((x,y),) -> [ a*x + b*y ; c*x + d*y ]
 end
 
 # ╔═╡ f25c6308-76b9-11eb-3563-1f0ef4cdf86a
@@ -368,6 +419,39 @@ We bet you have noticed that these functions could all have been defined with ma
 md"""
 or in math `` \begin{pmatrix} a & b \\ c & d \end{pmatrix}
 \begin{pmatrix} x \\ y \end{pmatrix}`` .
+"""
+
+# ╔═╡ 80124560-58f3-4517-a1af-fdbc609da8f5
+md"""
+The functions above can be translated in math as:
+
+- Identity:
+$$\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}
+\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} x \\ y \end{pmatrix}$$
+
+- lin1: 
+$$\begin{pmatrix} 2 & 3 \\ -5 & 4 \end{pmatrix}
+\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 2x + 3y \\ -5x + 4y \end{pmatrix}$$
+
+- scalex:
+$$\begin{pmatrix} \alpha & 0 \\ 0 & 1 \end{pmatrix}
+\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} \alpha x \\ y \end{pmatrix}$$
+
+- scaley:
+$$\begin{pmatrix} 1 & 0 \\ 0 & \alpha \end{pmatrix}
+\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} x \\ \alpha y \end{pmatrix}$$
+
+- rot:
+$$\begin{pmatrix} \cos(\theta) & \sin(\theta) \\ -\sin(\theta) & \cos(\theta) \end{pmatrix}
+\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} x \cos(\theta) + y \sin(\theta)\\ -x \sin(\theta) + y \cos(\theta) \end{pmatrix}$$
+
+- shear:
+$$\begin{pmatrix} 1 & \alpha \\ 0 & 1 \end{pmatrix}
+\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} x + \alpha y \\ y \end{pmatrix}$$
+
+- genlin:
+$$\begin{pmatrix} a & b \\ c & d \end{pmatrix}
+\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} ax + by \\ cx + dy \end{pmatrix}$$
 """
 
 # ╔═╡ f70f7ea8-76b9-11eb-3bd7-87d40a2861b1
@@ -693,6 +777,7 @@ version = "3.3.3"
 
 [[ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
+version = "1.1.1"
 
 [[Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -750,6 +835,7 @@ version = "3.43.0"
 [[CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+version = "0.5.2+0"
 
 [[DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
@@ -788,14 +874,18 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.6"
 
 [[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+version = "1.6.0"
 
 [[FileIO]]
 deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "9267e5f50b0e12fdfd5a2455534345c4cf2c7f7a"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.14.0"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FixedPointNumbers]]
 deps = ["Statistics"]
@@ -915,10 +1005,12 @@ version = "2.1.2+0"
 [[LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
+version = "0.6.3"
 
 [[LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
+version = "7.84.0+0"
 
 [[LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
@@ -927,6 +1019,7 @@ uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 [[LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
+version = "1.10.2+0"
 
 [[Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -962,6 +1055,7 @@ uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 [[MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
+version = "2.28.0+0"
 
 [[Mmap]]
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
@@ -974,6 +1068,7 @@ version = "0.3.3"
 
 [[MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
+version = "2022.2.1"
 
 [[NaNMath]]
 git-tree-sha1 = "b086b7ea07f8e38cf122f5016af580881ac914fe"
@@ -988,6 +1083,7 @@ version = "1.0.2"
 
 [[NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
+version = "1.2.0"
 
 [[OffsetArrays]]
 deps = ["Adapt"]
@@ -998,6 +1094,7 @@ version = "1.11.0"
 [[OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
+version = "0.3.20+0"
 
 [[OpenEXR]]
 deps = ["Colors", "FileIO", "OpenEXR_jll"]
@@ -1014,6 +1111,7 @@ version = "3.1.1+0"
 [[OpenLibm_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "05823500-19ac-5b8b-9628-191a04bc5112"
+version = "0.8.1+0"
 
 [[OpenSpecFun_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Pkg"]
@@ -1047,6 +1145,7 @@ version = "2.3.1"
 [[Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+version = "1.8.0"
 
 [[PkgVersion]]
 deps = ["Pkg"]
@@ -1103,6 +1202,7 @@ version = "1.3.0"
 
 [[SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+version = "0.7.0"
 
 [[Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -1149,10 +1249,12 @@ uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 [[TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+version = "1.0.0"
 
 [[Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
+version = "1.10.1"
 
 [[TensorCore]]
 deps = ["LinearAlgebra"]
@@ -1185,10 +1287,12 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 [[Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
+version = "1.2.12+3"
 
 [[libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+version = "5.1.1+0"
 
 [[libpng_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Zlib_jll"]
@@ -1205,10 +1309,12 @@ version = "1.8.6+1"
 [[nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
+version = "1.48.0+0"
 
 [[p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
+version = "17.4.0+0"
 """
 
 # ╔═╡ Cell order:
@@ -1236,17 +1342,21 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═87b99c8a-76ac-11eb-1c94-8f1ffe3be593
 # ╟─504076fc-76ac-11eb-30c3-bfa75c991cb2
 # ╟─f1dd24d8-76ac-11eb-1de7-a763a1b95668
+# ╟─6139c4d9-8a6f-4c92-b038-ff44720b5ab5
 # ╟─fe01da74-76ac-11eb-12e3-8320340b6139
 # ╟─b818107d-a0f3-417c-a09f-1698de49e7ac
 # ╠═d42aec08-76ad-11eb-361a-a1f2c90fd4ec
 # ╠═06437040-76ae-11eb-0b1c-23a6470f41c8
+# ╠═8b5ee122-e852-4bd8-bf03-0b02e5e5211f
 # ╟─28cd454c-76ae-11eb-0d1e-a56995100d59
 # ╟─38b51946-76ae-11eb-2c8a-e19b30bf42cb
 # ╟─632a1f8c-76ae-11eb-2088-15c3e3c0a210
-# ╟─8a99f186-76af-11eb-031b-f1c288993c7f
+# ╠═8a99f186-76af-11eb-031b-f1c288993c7f
 # ╠═ca1dfb8a-76b0-11eb-1323-d100bdeedc2d
 # ╟─f7df6cda-76b1-11eb-11e4-8d0af0349651
+# ╟─a9f43fb2-2d89-432d-8359-d34356ed1811
 # ╟─63449b54-76b4-11eb-202f-3bda2f4cff4d
+# ╟─619be8ee-81ea-4ceb-a310-0816cebaf5de
 # ╠═8c6b0236-76b4-11eb-2acf-91da23bedf0e
 # ╠═a397d526-76b5-11eb-3cce-4374e33324d1
 # ╟─4a57d898-76b6-11eb-15ea-7be43393922c
@@ -1259,9 +1369,12 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═57b0cd3c-76b7-11eb-0ece-810f3a8ede00
 # ╟─6d411cea-76b9-11eb-061b-87d472bc3bdd
 # ╟─bc2c6afc-76b7-11eb-0631-51f83cd73205
+# ╟─e979afe1-75b4-4943-a982-f5f0516e1297
 # ╠═ef06cfd8-76b7-11eb-1530-1fcd7e5c5992
+# ╟─25ff75b5-4ca9-426a-8390-71a294ddad7c
 # ╟─051db7a0-76b8-11eb-14c7-531f42ef60b8
 # ╟─5f1afd24-76b8-11eb-36ab-9bbb3d73b930
+# ╠═aec36b4d-d14d-4839-82f3-b848bb9c862a
 # ╠═2705bf34-76b8-11eb-3aaa-d363085784ff
 # ╟─dfb9d74c-76b8-11eb-24ff-e521f1294a6f
 # ╟─1049f458-76b9-11eb-1d2d-af0b22480121
@@ -1274,6 +1387,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─c9a148f0-76bb-11eb-0778-9d3e84369a19
 # ╠═db4bc328-76bb-11eb-28dc-eb9df8892d01
 # ╟─89f0bc54-76bb-11eb-271b-3190b4d8cbc0
+# ╟─80124560-58f3-4517-a1af-fdbc609da8f5
 # ╟─f70f7ea8-76b9-11eb-3bd7-87d40a2861b1
 # ╠═78176284-76bc-11eb-3045-f584127f58b9
 # ╟─bf28c388-76bd-11eb-08a7-af2671218017
