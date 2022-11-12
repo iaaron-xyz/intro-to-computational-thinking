@@ -350,6 +350,20 @@ begin
 	∇f = [ ∂f₅∂x , ∂f₅∂y, ∂f₅∂z]  # The gradient with the changes in x, y and z
 end
 
+# ╔═╡ 3a2e1381-f9a4-443b-960c-6870c4810b08
+md"""
+#### Example 2
+"""
+
+# ╔═╡ a8c06af7-4614-4c3e-b6d4-883c88129eb5
+md"""The purpose of this example is understand and verify in an easy way that the analytic method and the computational method actual lead to the same result."""
+
+# ╔═╡ 31c733fb-4165-4743-b31c-a91ced3f2d23
+f₈((x, y, z)) = x + 2*y + 3*z
+
+# ╔═╡ 0cab37b7-a386-4d19-9219-01d4f3259bc7
+ForwardDiff.gradient(f₈, [1,1,1])
+
 # ╔═╡ dfb9d74c-76b8-11eb-24ff-e521f1294a6f
 md"""
 Whether you are an expert at multivariable calculus, or you have never seen this before, I hope seeing it numerically makes the idea intuitive.
@@ -498,6 +512,20 @@ md"""
 ### 4.1.6 Automatic Differentiation of Transformations
 """
 
+# ╔═╡ a7fb09fe-ed2e-4ff8-8722-36f385ad8160
+md"""
+According to the [wolfram page](https://mathworld.wolfram.com/Jacobian.html) the Jacobian is a set $\textbf{y} = \textbf{f}(\textbf{x})$ of $n$ equations in $n$ variables $x_1, x_2, x_3, ..., x_n$ written explicitly as:
+
+$$\textbf{y} = \begin{vmatrix} f_1(\textbf{x}) \\ f_2(\textbf{x})\\ \vdots \\ f_3(\textbf{x}) \end{vmatrix}$$
+
+And the **Jacobian matrix** or simply called the Jacobian is defined by:
+
+$$
+\textbf{J}(x_1, x_2, \cdots, x_n) = \begin{pmatrix} \frac{\partial y_1}{\partial x_1} & \cdots & \frac{\partial y_1}{\partial x_n} \\
+\vdots & \ddots & \vdots \\
+\frac{\partial y_1}{\partial x_1} & \cdots & \frac{\partial y_n}{\partial x_n}\end{pmatrix}$$
+"""
+
 # ╔═╡ 9786e2be-76be-11eb-3755-b5669c37aa64
 ForwardDiff.jacobian( warp(3.0), [4,5] )
 
@@ -529,10 +557,20 @@ Matrices are often thought of as containers of numbers in a rectangular array, a
 # ╔═╡ 2e8c4a48-d535-44ac-a1f1-4cb26c4aece6
 
 
+# ╔═╡ b7a2d2ec-09bb-4c22-86c4-a4899fe23eb3
+md"""**Parameters to change**"""
+
 # ╔═╡ ce55beee-7643-11eb-04bc-b517703facff
 md"""
 α= $(@bind α Slider(.1:.1:3, show_value=true))
 """
+
+# ╔═╡ ed3caab2-76bf-11eb-2544-21e8181adef5
+#T = shear(α) # Pick a transformation
+#T = genlin(a,b,c,d) # These values are in the dynamic matric just below
+#T = rot(a)
+#T = scalex(a)
+T = warp(α)
 
 # ╔═╡ 005ca75a-7622-11eb-2ba4-9f450e71df1f
 let
@@ -555,9 +593,8 @@ $(@bind d Scrubbable(range; default=1.0))
 """
 end
 
-# ╔═╡ ed3caab2-76bf-11eb-2544-21e8181adef5
-#T = shear(α) # Pick a transformation
-T = genlin(a,b,c,d)
+# ╔═╡ e647cf1c-6ae6-4ba2-ab18-e8f1804292be
+md"""**Visualize**"""
 
 # ╔═╡ 2efaa336-7630-11eb-0c17-a7d4a0141dac
 md"""
@@ -1376,6 +1413,10 @@ version = "17.4.0+0"
 # ╟─5f1afd24-76b8-11eb-36ab-9bbb3d73b930
 # ╠═aec36b4d-d14d-4839-82f3-b848bb9c862a
 # ╠═2705bf34-76b8-11eb-3aaa-d363085784ff
+# ╟─3a2e1381-f9a4-443b-960c-6870c4810b08
+# ╟─a8c06af7-4614-4c3e-b6d4-883c88129eb5
+# ╠═31c733fb-4165-4743-b31c-a91ced3f2d23
+# ╠═0cab37b7-a386-4d19-9219-01d4f3259bc7
 # ╟─dfb9d74c-76b8-11eb-24ff-e521f1294a6f
 # ╟─1049f458-76b9-11eb-1d2d-af0b22480121
 # ╟─a0afe3ae-76b9-11eb-2301-cde7260ddd7f
@@ -1395,20 +1436,23 @@ version = "17.4.0+0"
 # ╠═852592d6-76bd-11eb-1265-5f200e39113d
 # ╠═8e36f4a2-76bd-11eb-2fda-9d1424752812
 # ╟─09ed6d38-76be-11eb-255b-3fbf76c21097
+# ╟─a7fb09fe-ed2e-4ff8-8722-36f385ad8160
 # ╠═9786e2be-76be-11eb-3755-b5669c37aa64
 # ╟─963694d6-76be-11eb-1b27-d5d063964d24
 # ╠═b78ef2fe-76be-11eb-1f55-3d0874b298e8
 # ╟─ad728ee6-7639-11eb-0b23-c37f1366fb4e
 # ╟─4d4e6b32-763b-11eb-3021-8bc61ac07eea
 # ╟─2e8c4a48-d535-44ac-a1f1-4cb26c4aece6
-# ╠═c0c90fec-0e55-4be3-8ea2-88b8705ee258
+# ╟─c0c90fec-0e55-4be3-8ea2-88b8705ee258
+# ╠═ed3caab2-76bf-11eb-2544-21e8181adef5
+# ╟─b7a2d2ec-09bb-4c22-86c4-a4899fe23eb3
 # ╟─ce55beee-7643-11eb-04bc-b517703facff
 # ╟─005ca75a-7622-11eb-2ba4-9f450e71df1f
-# ╠═ed3caab2-76bf-11eb-2544-21e8181adef5
+# ╟─e647cf1c-6ae6-4ba2-ab18-e8f1804292be
+# ╟─8e0505be-359b-4459-9de3-f87ec7b60c23
 # ╟─2efaa336-7630-11eb-0c17-a7d4a0141dac
 # ╟─488d732c-7631-11eb-38c3-e9a9165d5606
 # ╟─60532aa0-740c-11eb-0402-af8ff117f042
-# ╠═8e0505be-359b-4459-9de3-f87ec7b60c23
 # ╟─f085296d-48b1-4db6-bb87-db863bb54049
 # ╟─d1757b2c-7400-11eb-1406-d937294d5388
 # ╟─5227afd0-7641-11eb-0065-918cb8538d55
