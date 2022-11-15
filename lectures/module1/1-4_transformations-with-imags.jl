@@ -25,7 +25,7 @@ begin
 
 	# Small patch to make images look more crisp:
 	# https://github.com/JuliaImages/ImageShow.jl/pull/50
-	Base.showable(::MIME"text/html", ::AbstractMatrix{<:Colorant}) = false
+	#Base.showable(::MIME"text/html", ::AbstractMatrix{<:Colorant}) = false
 end
 
 # ╔═╡ febfa62a-74fa-11eb-2fe6-df7de43ef4b6
@@ -158,24 +158,65 @@ md"""
 
 # ╔═╡ 39552b7a-74fb-11eb-04e0-3981ada52c92
 md"""
-How can we pixelate a corgi? Found this cute picture online, but we'll pixelate
-a real corgi.
+The next is how to downsample and then upsample an image in julia.
+- First: Get the original image.
+- Second: Downsample that image.
+- Third: Upscale the reduced image.
+
+What you get at the end of this process?
+"""
+
+# ╔═╡ f6b34f58-476e-4b0d-a2ef-c2c4d2bd9ee1
+md"""
+### 2.1.1 Full Image
+"""
+
+# ╔═╡ 9908951d-e3ef-4f38-a938-9708af06af13
+md"""
+#### 1 - Original Image
 """
 
 # ╔═╡ 14f2b85e-74ad-11eb-2682-d9de646aedf3
-pixelated_corgi = load(download("https://i.redd.it/99lhfbnwpgd31.png"))
+img1 = load("./images/landscape.jpg")
 
-# ╔═╡ 516e73e2-74fb-11eb-213e-9dbd9472e0db
-philip =  load(download("https://user-images.githubusercontent.com/6933510/107239146-dcc3fd00-6a28-11eb-8c7b-41aaf6618935.png"))
+# ╔═╡ 2690ded4-33b3-46e3-a3e4-717d3ace3fd9
+h_img1 = size(img1)[1]
+
+# ╔═╡ 2be2103f-4d99-4f12-a8d0-8b86dc98657b
+w_img1 = size(img1)[2]
+
+# ╔═╡ bb3259ca-06cd-4cfb-8cf6-65562f350945
+md"""
+#### 2 - Downsample that image
+"""
 
 # ╔═╡ b5d0ef90-74fb-11eb-3126-792f954c7be7
 @bind r Slider(1:40, show_value=true, default=40)
 
 # ╔═╡ 754c3704-74fb-11eb-1199-2b9798d7251f
-downsample_philip = philip[1:r:end, 1:r:end]
+downsample_img1 = img1[1:r:h_img1, 1:r:w_img1]
+
+# ╔═╡ 6d67249f-7d21-43e9-bda7-2f73d2341e34
+md"""
+Remember, in julia you can slice arrays using the syntax: `arr[start:steps:end]`
+"""
+
+# ╔═╡ 824e7cf4-91dc-45f7-8d16-0148900abe67
+md"""
+#### 3 - Upscale the Downsampled image
+"""
 
 # ╔═╡ 9eb917ba-74fb-11eb-0527-15e981ce9c6a
-upsample_philip = kron(downsample_philip, fill(1,r,r))
+upsample_img1 = kron(downsample_img1, fill(1,r,r))
+
+# ╔═╡ b118f86f-da31-41a5-a704-59181217765d
+md"""
+- `fill()` is a function to fill a matrix
+"""
+
+# ╔═╡ c3487d0f-6e4e-4534-aaa6-0086c53980a1
+# What is fill
+fill(1,r,r)
 
 # ╔═╡ 486d3022-74ff-11eb-1865-e15436bd9aad
 md"""
@@ -186,6 +227,33 @@ md"""
 md"""
 Exercise: Use the nose selection tool from Section 1.1 to pixelate a rectangle of an image.  Warning: you'll have to worry about sizes if not exact multiples.
 """
+
+# ╔═╡ 5f5abc98-e4d4-489e-832f-7f95bbf144d9
+md"""
+### 2.1.2 Portion of an Image (Exercise Solution)
+"""
+
+# ╔═╡ feb616e8-aa97-473b-a2fa-3c77e7cdce7e
+@bind imgrows Slider(1:h_img1, show_value=true, default=h_img1/2)
+
+# ╔═╡ f5cde59f-8a20-4968-86c4-d83fee880174
+@bind imgcols Slider(1:w_img1, show_value=true, default=w_img1/2)
+
+# ╔═╡ 4c882d1e-67fd-4b13-b9e5-4369cf55f11a
+md"""
+#### Porion of the image
+"""
+
+# ╔═╡ 1a7a6214-3479-48f2-89d8-514c49f203b9
+downsample_portion = img1[100:r:imgrows, 200:r:imgcols]
+
+# ╔═╡ 8ba1c2b0-0f33-4742-a0e7-8a3adf7b6991
+md"""
+#### Upscale the image
+"""
+
+# ╔═╡ ca9c7254-759c-4d6f-89e1-feb991fd196f
+upsample_portion = kron(downsample_portion, fill(1,r,r))
 
 # ╔═╡ 339ccfca-74b1-11eb-0c35-774da6b189ed
 md"""
@@ -207,13 +275,13 @@ Let's scale some corgis.
 """
 
 # ╔═╡ 91a1bca4-74aa-11eb-3917-1dfd73d0ad9c
-corgis = load(download("https://user-images.githubusercontent.com/6933510/108605549-fb28e180-73b4-11eb-8520-7e29db0cc965.png"))
+photo1 = load("./images/room.jpg")
 
 # ╔═╡ 8e698bdc-7501-11eb-1d2e-c336ccbde0b0
 @bind c Slider(0:.1:3, show_value=true, default=1)
 
 # ╔═╡ ab2bc924-7501-11eb-03ba-8dfc1ffe3f36
-c .* corgis  # scaling the corgis changes intensity
+c .* photo1  # scaling the corgis changes intensity
 
 # ╔═╡ e11d6300-7501-11eb-239a-135596309d20
 md"""
@@ -225,7 +293,7 @@ pixel by pixel or that the scalar is being "broadcast" to every pixel.
 
 # ╔═╡ 9a66c07e-7503-11eb-3127-7fce91b3a24a
 md"""
-Scaling too far saturates the image.  (Any r,g,b ≥ 1, saturates at 1.)
+- Scaling too far saturates the image.  (Any r,g,b ≥ 1, saturates at 1.)
 """
 
 # ╔═╡ 47d40406-7502-11eb-2f43-cd5c848f25a6
@@ -234,15 +302,15 @@ We need another image.  We could grab one from somewhere or we can just transfor
 """
 
 # ╔═╡ 9ce0b980-74aa-11eb-0678-01209451fb65
-upsidedown_corgis = corgis[ end:-1:1 , :]
+upsidedown_photo1 = photo1[ end:-1:1 , :]
 
 # ╔═╡ 68821bf4-7502-11eb-0d3c-03d7a00fdba4
 md"""
-Now let's scaled version of the two images to see what that does.
+Now let's scaled version of the two images to see what that does. In other words, let's create a linear combination of those images, the original and the upside down ones!
 """
 
 # ╔═╡ 447e7c9e-74b1-11eb-27ea-71aa4338b11a
-(.5 * upsidedown_corgis .+ .5 * corgis) 
+(.5 * upsidedown_photo1 .+ .5 * photo1) 
 
 # ╔═╡ c9dff6f4-7503-11eb-2715-0bf9d3ece9e1
 md"""
@@ -259,7 +327,7 @@ scale the two corgi pictures with different α's, thereby giving different weigh
 @bind α Slider(0:.01:1 , show_value=true, default = 1.0)
 
 # ╔═╡ c9dcac48-74aa-11eb-31a6-23357180c1c8
-α .* corgis .+ (1-α) .* upsidedown_corgis
+α .* photo1 .+ (1-α) .* upsidedown_photo1
 
 # ╔═╡ 30b1c1f0-7504-11eb-1be7-a9463caea809
 md"""
@@ -336,8 +404,8 @@ md"""
 
 # ╔═╡ 4fab4616-74b0-11eb-0088-6b50237d7d54
 md"""
-[Wikipedia Page on Kernels]
-(https://en.wikipedia.org/wiki/Kernel_(image_processing)#Details)
+- [Wikipedia Page on Kernels](https://en.wikipedia.org/wiki/Kernel_(image_processing)#Details)
+- [What is Convolution](https://en.wikipedia.org/wiki/Kernel_(image_processing)#Convolution)
 """
 
 # ╔═╡ 275bf7ac-74b3-11eb-32c3-cda1e4f1f8c2
@@ -382,7 +450,7 @@ end
 kernel_matrix[kernel_name]
 
 # ╔═╡ d22903d6-7529-11eb-2dcd-132cd27104c2
-[imfilter( corgis, kernelize(kernel_matrix[kernel_name])) Gray.(1.5 .* abs.(imfilter( corgis, kernelize(kernel_matrix[kernel_name])))) ]
+[imfilter( photo1, kernelize(kernel_matrix[kernel_name])) Gray.(1.5 .* abs.(imfilter( photo1, kernelize(kernel_matrix[kernel_name])))) ]
 
 # ╔═╡ 844ed844-74b3-11eb-2ee1-2de664b26bc6
 md"""
@@ -448,21 +516,42 @@ md"""
 """
 
 # ╔═╡ d127303a-7521-11eb-3507-7341a416211f
-kernel[0,0]
+# Observe that kernel goes from -2 to 2 in x and y directions
+# This is because the option is offset
+kernel[-2, -2]
+
+# ╔═╡ c68f0212-b7c2-4f14-892e-4bd02666cb68
+kernel[0, 0] # The center value of the kernel
 
 # ╔═╡ d4581b56-7522-11eb-2c15-991c0c790e67
-kernel[-2,2]
+kernel[-2,2] # Notice is symmetric
+
+# ╔═╡ 79224027-aca2-4a80-8a79-47ef3efb8067
+size(kernel)
+
+# ╔═╡ ad3ac31a-3c76-4eed-b607-dc1d96f20345
+md"""
+#### Normal Array
+"""
 
 # ╔═╡ 40c15c3a-7523-11eb-1f2a-bd90b127dad2
 M = [ 1  2  3  4  5
 	  6  7  8  9 10
 	 11 12 13 14 15]
 
+# ╔═╡ 428a48f4-bb37-4883-a87f-87ea518e49fa
+indices_before = [ c.I for c ∈ CartesianIndices(M)]
+
+# ╔═╡ 5e1b8285-5a75-4b0c-b013-09c6eece4eab
+md"""
+#### The same array with offset
+"""
+
 # ╔═╡ 08642690-7523-11eb-00dd-63d4cf6513dc
 Z = OffsetArray(M, -1:1, -2:2)
 
 # ╔═╡ deac4cf2-7523-11eb-2832-7b9d31389b08
-the_indices = [ c.I for c ∈ CartesianIndices(Z)]
+indices_after = [ c.I for c ∈ CartesianIndices(Z)]
 
 # ╔═╡ 32887dfa-7524-11eb-35cd-051eff594fa9
 Z[1,-2]
@@ -485,7 +574,8 @@ md"""
 # ╔═╡ df060a88-7507-11eb-034b-5346d67a0e0d
 md"""
 Think about integrals vs derivatives in one dimension.
-If you replace f(x) with g(x) = ∫ f(t) dt for x-r ≤ t ≤ x+r, that will blur or smooth out the features of f.  However if you take the derivative,you will emphasize the changes, i.e., you will sharpen or "edge-detect."
+If you replace $f(x)$ with $g(x) = ∫ f(t) dt$ for $x-r ≤ t ≤ x+r$, 
+that will blur or smooth out the features of $f$.  However if you take the derivative,you will emphasize the changes, i.e., you will sharpen or "edge-detect."
 """
 
 # ╔═╡ 60c8db60-7506-11eb-1468-c989809c933a
@@ -1742,13 +1832,28 @@ version = "0.9.1+5"
 # ╟─e099815e-74a1-11eb-1541-033f6abe9f8e
 # ╟─e82a4dd8-74b0-11eb-1108-6b09e67a80c1
 # ╟─39552b7a-74fb-11eb-04e0-3981ada52c92
+# ╟─f6b34f58-476e-4b0d-a2ef-c2c4d2bd9ee1
+# ╟─9908951d-e3ef-4f38-a938-9708af06af13
 # ╠═14f2b85e-74ad-11eb-2682-d9de646aedf3
-# ╠═516e73e2-74fb-11eb-213e-9dbd9472e0db
+# ╠═2690ded4-33b3-46e3-a3e4-717d3ace3fd9
+# ╠═2be2103f-4d99-4f12-a8d0-8b86dc98657b
+# ╟─bb3259ca-06cd-4cfb-8cf6-65562f350945
 # ╠═b5d0ef90-74fb-11eb-3126-792f954c7be7
 # ╠═754c3704-74fb-11eb-1199-2b9798d7251f
+# ╟─6d67249f-7d21-43e9-bda7-2f73d2341e34
+# ╟─824e7cf4-91dc-45f7-8d16-0148900abe67
 # ╠═9eb917ba-74fb-11eb-0527-15e981ce9c6a
+# ╟─b118f86f-da31-41a5-a704-59181217765d
+# ╠═c3487d0f-6e4e-4534-aaa6-0086c53980a1
 # ╟─486d3022-74ff-11eb-1865-e15436bd9aad
 # ╟─b9da7332-74ff-11eb-241b-fb87e77d646a
+# ╟─5f5abc98-e4d4-489e-832f-7f95bbf144d9
+# ╠═feb616e8-aa97-473b-a2fa-3c77e7cdce7e
+# ╠═f5cde59f-8a20-4968-86c4-d83fee880174
+# ╟─4c882d1e-67fd-4b13-b9e5-4369cf55f11a
+# ╠═1a7a6214-3479-48f2-89d8-514c49f203b9
+# ╟─8ba1c2b0-0f33-4742-a0e7-8a3adf7b6991
+# ╠═ca9c7254-759c-4d6f-89e1-feb991fd196f
 # ╟─339ccfca-74b1-11eb-0c35-774da6b189ed
 # ╟─8711c698-7500-11eb-2505-d35a4de169b4
 # ╟─84350cb8-7501-11eb-095e-8f1a7e015f25
@@ -1797,10 +1902,15 @@ version = "0.9.1+5"
 # ╟─ee93eeb2-7524-11eb-342d-0343d8aebf59
 # ╟─662d73b6-74b3-11eb-333d-f1323a001000
 # ╠═d127303a-7521-11eb-3507-7341a416211f
+# ╠═c68f0212-b7c2-4f14-892e-4bd02666cb68
 # ╠═d4581b56-7522-11eb-2c15-991c0c790e67
+# ╠═79224027-aca2-4a80-8a79-47ef3efb8067
+# ╟─ad3ac31a-3c76-4eed-b607-dc1d96f20345
 # ╠═40c15c3a-7523-11eb-1f2a-bd90b127dad2
+# ╟─428a48f4-bb37-4883-a87f-87ea518e49fa
+# ╟─5e1b8285-5a75-4b0c-b013-09c6eece4eab
 # ╠═08642690-7523-11eb-00dd-63d4cf6513dc
-# ╠═deac4cf2-7523-11eb-2832-7b9d31389b08
+# ╟─deac4cf2-7523-11eb-2832-7b9d31389b08
 # ╠═32887dfa-7524-11eb-35cd-051eff594fa9
 # ╟─0f765670-7506-11eb-2a37-931b15bb387f
 # ╟─82737d28-7507-11eb-1e39-c7dc12e18882
