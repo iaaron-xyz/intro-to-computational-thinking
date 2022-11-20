@@ -100,17 +100,26 @@ md"👉 Try changing `n` and `v` around. Notice that you can run the cell `v = r
 # ╔═╡ 801d90c0-ee09-11ea-28d6-61b806de26dc
 md"""
 #### Exercise 1.2
-We need to decide how to handle the **boundary conditions**, i.e. what happens if we try to access a position in the vector `v` beyond `1:n`.  The simplest solution is to assume that $v_{i}$ is 0 outside the original vector; however, this may lead to strange boundary effects.
+We need to decide how to handle the **boundary conditions**, i.e. what happens if we try to access a position in the vector `v` beyond `1:n`.  The simplest solution is to assume that $v_{i}$ is $0$ outside the original vector; however, this may lead to strange boundary effects.
     
 A better solution is to use the *closest* value that is inside the vector. Effectively we are extending the vector and copying the extreme values into the extended positions. (Indeed, this is one way we could implement this; these extra positions are called **ghost cells**.)
 
 👉 Write a function `extend(v, i)` that checks whether the position $i$ is inside `1:n`. If so, return the $(HTML("<br>")) ``i``th component of `v`; otherwise, return the nearest end value.
 """
 
+# ╔═╡ 98e67bbc-73ed-4067-901f-69f8d2f4d0cb
+md"""
+#### Exercise 1.2 (Solution)
+"""
+
 # ╔═╡ 802bec56-ee09-11ea-043e-51cf1db02a34
 function extend(v::AbstractVector, i)
-	
-	return missing
+	if length(v) < i
+		return v[end]
+	elseif i < 1
+		return v[1]
+	end
+	return v[i]
 end
 
 # ╔═╡ b7f3994c-ee1b-11ea-211a-d144db8eafc2
@@ -1909,6 +1918,7 @@ version = "17.4.0+0"
 # ╟─ff70782e-e8d2-4281-9b24-d45c925f55e2
 # ╟─7522f81e-ee1c-11ea-35af-a17eb257ff1a
 # ╟─801d90c0-ee09-11ea-28d6-61b806de26dc
+# ╟─98e67bbc-73ed-4067-901f-69f8d2f4d0cb
 # ╠═802bec56-ee09-11ea-043e-51cf1db02a34
 # ╟─b7f3994c-ee1b-11ea-211a-d144db8eafc2
 # ╠═803905b2-ee09-11ea-2d52-e77ff79693b0
