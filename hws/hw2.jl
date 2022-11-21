@@ -147,10 +147,14 @@ md"""
 
 """
 
+# ╔═╡ daa17e4f-7bf1-4c79-ab02-c69668e54dd4
+md"""
+#### Exercise 1.3 (Solution)
+"""
+
 # ╔═╡ 5fdc5d0d-a52c-476e-b3b5-3b6364b706e4
-function mean(v)
-	
-	return missing
+function mean(v::AbstractVector)
+	return sum(v)/length(v)
 end
 
 # ╔═╡ e84c9cc2-e6e1-46f1-bf4e-9605da5e6f4a
@@ -161,30 +165,44 @@ md"""
 Return a vector of the same size as `v`.
 """
 
-# ╔═╡ 807e5662-ee09-11ea-3005-21fdcc36b023
-function box_blur(v::AbstractArray, l)
-	
-	return missing
-end
+# ╔═╡ cb57f5f4-b619-4ca4-8413-5f63b742a4c3
+md"""
+##### Solution 1.3 - Test 1
+"""
 
-# ╔═╡ 4f08ebe8-b781-4a32-a218-5ecd8338561d
-colored_line(box_blur(example_vector, 1))
+# ╔═╡ 7ccd1caf-75c3-4346-94bb-e366031c0ece
+md"""
+Before
+"""
 
-# ╔═╡ 808deca8-ee09-11ea-0ee3-1586fa1ce282
-let
-	try
-		test_v = rand(n)
-		original = copy(test_v)
-		box_blur(test_v, 5)
-		if test_v != original
-			md"""
-			!!! danger "Oopsie!"
-			    It looks like your function _modifies_ `v`. Can you write it without doing so? Maybe you can use `copy`.
-			"""
-		end
-	catch
-	end
-end
+# ╔═╡ c319c8b7-dde6-4e59-8048-37d8e7745ee2
+colored_line(example_vector)
+
+# ╔═╡ bf4edbeb-3fd0-4009-a5eb-9a076f6c910c
+md"""
+After
+"""
+
+# ╔═╡ cb581136-f1f4-409f-add3-555c251c5374
+md"""
+##### Solution 1.3 - Test 2
+"""
+
+# ╔═╡ 22db7754-4fe0-4f8b-a763-37a70bd861dd
+md"""
+Before
+"""
+
+# ╔═╡ 6778d445-cfff-4c5e-a85a-4abb8c05356f
+gradient_vector = collect(0.1:0.1:1)
+
+# ╔═╡ 4e41e789-7a92-4ba2-99ad-c8c039160751
+colored_line(gradient_vector)
+
+# ╔═╡ 64820f3f-bc3c-49e6-a330-a1f791599c62
+md"""
+After
+"""
 
 # ╔═╡ 809f5330-ee09-11ea-0e5b-415044b6ac1f
 md"""
@@ -193,13 +211,11 @@ md"""
 """
 
 # ╔═╡ e555a7e6-f11a-43ac-8218-6d832f0ce251
-
+@bind l_box Slider(0:5, default=1)
 
 # ╔═╡ 302f0842-453f-47bd-a74c-7942d8c96485
-
-
-# ╔═╡ 7d80a1ea-a0a9-41b2-9cfe-a334717ab2f4
-
+# Original vector
+colored_line(v)
 
 # ╔═╡ 80ab64f4-ee09-11ea-29b4-498112ed0799
 md"""
@@ -249,12 +265,6 @@ box_blur_kernel_test = box_blur_kernel(box_kernel_l)
 md"""
 Let's apply your kernel to our test vector `v` (first cell), and compare the result to our previous box blur function (second cell). The two should be identical.
 """
-
-# ╔═╡ bbe1a562-8d97-4112-a88a-c45c260f574d
-let
-	result = box_blur(v, box_kernel_l)
-	colored_line(result)
-end
 
 # ╔═╡ 03f91a22-1c3e-4c42-9d78-1ee36851a120
 md"""
@@ -353,6 +363,56 @@ if extend(v,1) === missing
 	missing
 else
 	colored_line([extend(example_vector, i) for i in -1:length(example_vector)+2])
+end
+
+# ╔═╡ 807e5662-ee09-11ea-3005-21fdcc36b023
+function box_blur(v::AbstractArray, l)
+	blurred = []
+	v_size = length(v)
+	for px in 1:v_size
+		# Start with a new set of neighbors
+		current_conv = []
+		# Iterate around the current pixel i in the range ±l
+		for c in -l+px:px+l
+			# crerate the semi-vector
+			push!(current_conv, extend(v, c))
+		end
+		# New vector with the blurred values
+		push!(blurred, mean(current_conv))
+	end
+	return blurred
+end
+
+# ╔═╡ 4f08ebe8-b781-4a32-a218-5ecd8338561d
+colored_line(box_blur(example_vector, 1))
+
+# ╔═╡ 78551e0b-a52b-4791-9945-23f3c3afd1cb
+colored_line(box_blur(gradient_vector, 1))
+
+# ╔═╡ 808deca8-ee09-11ea-0ee3-1586fa1ce282
+let
+	try
+		test_v = rand(n)
+		original = copy(test_v)
+		box_blur(test_v, 5)
+		if test_v != original
+			md"""
+			!!! danger "Oopsie!"
+			    It looks like your function _modifies_ `v`. Can you write it without doing so? Maybe you can use `copy`.
+			"""
+		end
+	catch
+	end
+end
+
+# ╔═╡ 7d80a1ea-a0a9-41b2-9cfe-a334717ab2f4
+# Blurred vector
+colored_line(box_blur(v, l_box))
+
+# ╔═╡ bbe1a562-8d97-4112-a88a-c45c260f574d
+let
+	result = box_blur(v, box_kernel_l)
+	colored_line(result)
 end
 
 # ╔═╡ 9afc4dca-ee16-11ea-354f-1d827aaa61d2
@@ -1932,15 +1992,26 @@ version = "17.4.0+0"
 # ╟─9bde9f92-ee0f-11ea-27f8-ffef5fce2b3c
 # ╟─45c4da9a-ee0f-11ea-2c5b-1f6704559137
 # ╟─431ba330-0f72-416a-92e9-55f51ff3bcd1
+# ╟─daa17e4f-7bf1-4c79-ab02-c69668e54dd4
 # ╠═5fdc5d0d-a52c-476e-b3b5-3b6364b706e4
 # ╟─e84c9cc2-e6e1-46f1-bf4e-9605da5e6f4a
 # ╠═807e5662-ee09-11ea-3005-21fdcc36b023
+# ╟─cb57f5f4-b619-4ca4-8413-5f63b742a4c3
+# ╟─7ccd1caf-75c3-4346-94bb-e366031c0ece
+# ╠═c319c8b7-dde6-4e59-8048-37d8e7745ee2
+# ╟─bf4edbeb-3fd0-4009-a5eb-9a076f6c910c
 # ╠═4f08ebe8-b781-4a32-a218-5ecd8338561d
+# ╟─cb581136-f1f4-409f-add3-555c251c5374
+# ╟─22db7754-4fe0-4f8b-a763-37a70bd861dd
+# ╠═6778d445-cfff-4c5e-a85a-4abb8c05356f
+# ╠═4e41e789-7a92-4ba2-99ad-c8c039160751
+# ╟─64820f3f-bc3c-49e6-a330-a1f791599c62
+# ╠═78551e0b-a52b-4791-9945-23f3c3afd1cb
 # ╟─808deca8-ee09-11ea-0ee3-1586fa1ce282
 # ╟─809f5330-ee09-11ea-0e5b-415044b6ac1f
 # ╠═e555a7e6-f11a-43ac-8218-6d832f0ce251
-# ╠═302f0842-453f-47bd-a74c-7942d8c96485
-# ╠═7d80a1ea-a0a9-41b2-9cfe-a334717ab2f4
+# ╟─302f0842-453f-47bd-a74c-7942d8c96485
+# ╟─7d80a1ea-a0a9-41b2-9cfe-a334717ab2f4
 # ╟─ea435e58-ee11-11ea-3785-01af8dd72360
 # ╟─80ab64f4-ee09-11ea-29b4-498112ed0799
 # ╠═28e20950-ee0c-11ea-0e0a-b5f2e570b56e
