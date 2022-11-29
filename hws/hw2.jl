@@ -340,8 +340,34 @@ md"""
 
 # ╔═╡ 7c2ec6c6-ee15-11ea-2d7d-0d9401a5e5d1
 function extend(M::AbstractMatrix, i, j)
-	
-	return missing
+	rows, cols = size(M)
+	# upper rows
+	if i < 1 && (j >= 1 && j <= cols)
+		return M[1, j]
+	# right columns
+	elseif (i >= 1 && i <= cols) && j > cols
+		return M[i, cols]
+	# lower rows
+	elseif  i > rows && (j >= 1 && j <= cols)
+		return M[rows, j]
+	# left columns
+	elseif (i >= 1 && i <= cols) && j < 1
+		return M[i, 1]
+	# top-left corner
+	elseif i < 1 && j < 1
+		return M[1, 1]
+	# top-right corner
+	elseif i < 1 && j > cols
+		return M[1, cols]
+	# bottom-right corner
+	elseif i > rows && j > cols
+		return M[rows, cols]
+	# bottom-left corner
+	elseif i > rows && j < 1
+		return M[rows, 1]
+	end
+	# Existent coordinate
+	return M[i,j]
 end
 
 # ╔═╡ 803905b2-ee09-11ea-2d52-e77ff79693b0
