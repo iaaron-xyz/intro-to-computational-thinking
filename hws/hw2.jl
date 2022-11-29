@@ -256,7 +256,7 @@ md"""
 # ╔═╡ 8a7d3cfd-6f19-43f0-ae16-d5a236f148e7
 function box_blur_kernel(l)
 	
-	return ones(2*l+1)/(2*l+1)
+	return ones(2*l+1)./(2*l+1)
 end
 
 # ╔═╡ a34d1ad8-3776-4bc4-93e5-72cfffc54f15
@@ -295,15 +295,6 @@ md"""
 We need to **sample** (i.e. evaluate) this at each pixel in an interval of length $2n+1$,
 and then **normalize** so that the sum of the resulting kernel is 1.
 """
-
-# ╔═╡ 1c8b4658-ee0c-11ea-2ede-9b9ed7d3125e
-function gaussian_kernel_1D(n; σ = 1)
-	
-	return missing
-end
-
-# ╔═╡ a6149507-d5ba-45c1-896a-3487070d36ec
-colored_line(gaussian_kernel_1D(4; σ=1))
 
 # ╔═╡ f8bd22b8-ee14-11ea-04aa-ab16fd01826e
 md"""
@@ -515,31 +506,6 @@ let
 	colored_line(result)
 end
 
-# ╔═╡ 38eb92f6-ee13-11ea-14d7-a503ac04302e
-test_gauss_1D_a = let
-	k = gaussian_kernel_1D(gaussian_kernel_size_1D)
-	
-	if k !== missing
-		convolve(v, k)
-	end
-end
-
-# ╔═╡ b424e2aa-ee14-11ea-33fa-35491e0b9c9d
-colored_line(test_gauss_1D_a)
-
-# ╔═╡ 24c21c7c-ee14-11ea-1512-677980db1288
-test_gauss_1D_b = let
-	v = create_bar()
-	k = gaussian_kernel_1D(gaussian_kernel_size_1D)
-	
-	if k !== missing
-		convolve(v, k)
-	end
-end
-
-# ╔═╡ bc1c20a4-ee14-11ea-3525-63c9fa78f089
-colored_line(test_gauss_1D_b)
-
 # ╔═╡ 5a5135c6-ee1e-11ea-05dc-eb0c683c2ce5
 md"_Let's test it out! 🎃_"
 
@@ -583,6 +549,40 @@ How can you express this mathematically using the 1D Gaussian function that we d
 
 # ╔═╡ f4d9fd6f-0f1b-4dec-ae68-e61550cee790
 gauss(x, y; σ=1) = 2π*σ^2 * gauss(x; σ=σ) * gauss(y; σ=σ)
+
+# ╔═╡ 1c8b4658-ee0c-11ea-2ede-9b9ed7d3125e
+function gaussian_kernel_1D(n; σ = 1)
+	g =  [gauss(x, σ) for x in -n:n]
+	return g ./ sum(g) 
+end
+
+# ╔═╡ a6149507-d5ba-45c1-896a-3487070d36ec
+colored_line(gaussian_kernel_1D(4; σ=1))
+
+# ╔═╡ 38eb92f6-ee13-11ea-14d7-a503ac04302e
+test_gauss_1D_a = let
+	k = gaussian_kernel_1D(gaussian_kernel_size_1D)
+	
+	if k !== missing
+		convolve(v, k)
+	end
+end
+
+# ╔═╡ b424e2aa-ee14-11ea-33fa-35491e0b9c9d
+colored_line(test_gauss_1D_a)
+
+# ╔═╡ 24c21c7c-ee14-11ea-1512-677980db1288
+test_gauss_1D_b = let
+	v = create_bar()
+	k = gaussian_kernel_1D(gaussian_kernel_size_1D)
+	
+	if k !== missing
+		convolve(v, k)
+	end
+end
+
+# ╔═╡ bc1c20a4-ee14-11ea-3525-63c9fa78f089
+colored_line(test_gauss_1D_b)
 
 # ╔═╡ 7c50ea80-ee15-11ea-328f-6b4e4ff20b7e
 md"""
@@ -645,14 +645,6 @@ Use your previous functions, and add cells to write helper functions as needed!
 function with_sobel_edge_detect(image)
 	
 	return missing
-end
-
-# ╔═╡ 8ffe16ce-ee20-11ea-18bd-15640f94b839
-if student.kerberos_id === "jazz"
-	md"""
-!!! danger "Oops!"
-    **Before you submit**, remember to fill in your name and kerberos ID at the top of this notebook!
-	"""
 end
 
 # ╔═╡ 2d9f3ae4-9e4c-49ce-aab0-5f87aba85c3e
@@ -835,9 +827,6 @@ bigbreak
 bigbreak
 
 # ╔═╡ 0001f782-ee0e-11ea-1fb4-2b5ef3d241e2
-bigbreak
-
-# ╔═╡ 5842895a-ee10-11ea-119d-81e4c4c8c53b
 bigbreak
 
 # ╔═╡ dfb7c6be-ee0d-11ea-194e-9758857f7b20
@@ -1118,8 +1107,9 @@ PlutoUI = "~0.7.38"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.2"
+julia_version = "1.8.2"
 manifest_format = "2.0"
+project_hash = "c52fcafab7344f9ce90050f2b9dea76c02594766"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -1141,6 +1131,7 @@ version = "3.4.0"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
+version = "1.1.1"
 
 [[deps.ArnoldiMethod]]
 deps = ["LinearAlgebra", "Random", "StaticArrays"]
@@ -1222,6 +1213,7 @@ version = "4.4.0"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+version = "0.5.2+0"
 
 [[deps.ComputationalResources]]
 git-tree-sha1 = "52cb3ec90e8a8bea0e62e275ba577ad0f74821f7"
@@ -1271,8 +1263,9 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.9.2"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+version = "1.6.0"
 
 [[deps.FFTViews]]
 deps = ["CustomUnitRanges", "FFTW"]
@@ -1297,6 +1290,9 @@ deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "7be5f99f7d15578798f338f5433b6c432ea8037b"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.16.0"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
@@ -1538,10 +1534,12 @@ version = "0.3.1"
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
+version = "0.6.3"
 
 [[deps.LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
+version = "7.84.0+0"
 
 [[deps.LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
@@ -1550,6 +1548,7 @@ uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 [[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
+version = "1.10.2+0"
 
 [[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -1602,6 +1601,7 @@ uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 [[deps.MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
+version = "2.28.0+0"
 
 [[deps.MetaGraphs]]
 deps = ["Graphs", "JLD2", "Random"]
@@ -1626,6 +1626,7 @@ version = "0.3.4"
 
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
+version = "2022.2.1"
 
 [[deps.NaNMath]]
 deps = ["OpenLibm_jll"]
@@ -1647,6 +1648,7 @@ version = "1.1.0"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
+version = "1.2.0"
 
 [[deps.OffsetArrays]]
 deps = ["Adapt"]
@@ -1657,6 +1659,7 @@ version = "1.11.2"
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
+version = "0.3.20+0"
 
 [[deps.OpenEXR]]
 deps = ["Colors", "FileIO", "OpenEXR_jll"]
@@ -1673,6 +1676,7 @@ version = "3.1.1+0"
 [[deps.OpenLibm_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "05823500-19ac-5b8b-9628-191a04bc5112"
+version = "0.8.1+0"
 
 [[deps.OpenSpecFun_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Pkg"]
@@ -1712,6 +1716,7 @@ version = "2.5.1"
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+version = "1.8.0"
 
 [[deps.PkgVersion]]
 deps = ["Pkg"]
@@ -1797,6 +1802,7 @@ version = "1.3.3"
 
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+version = "0.7.0"
 
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -1883,10 +1889,12 @@ version = "0.33.21"
 [[deps.TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+version = "1.0.0"
 
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
+version = "1.10.1"
 
 [[deps.TensorCore]]
 deps = ["LinearAlgebra"]
@@ -1947,6 +1955,7 @@ version = "0.5.5"
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
+version = "1.2.12+3"
 
 [[deps.Zstd_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1957,6 +1966,7 @@ version = "1.5.2+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+version = "5.1.1+0"
 
 [[deps.libpng_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Zlib_jll"]
@@ -1973,10 +1983,12 @@ version = "1.10.3+0"
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
+version = "1.48.0+0"
 
 [[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
+version = "17.4.0+0"
 """
 
 # ╔═╡ Cell order:
@@ -2058,9 +2070,9 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─f8bd22b8-ee14-11ea-04aa-ab16fd01826e
 # ╠═2a9dd06a-ee13-11ea-3f84-67bb309c77a8
 # ╠═b424e2aa-ee14-11ea-33fa-35491e0b9c9d
-# ╠═38eb92f6-ee13-11ea-14d7-a503ac04302e
+# ╟─38eb92f6-ee13-11ea-14d7-a503ac04302e
 # ╠═bc1c20a4-ee14-11ea-3525-63c9fa78f089
-# ╠═24c21c7c-ee14-11ea-1512-677980db1288
+# ╟─24c21c7c-ee14-11ea-1512-677980db1288
 # ╟─ce24e486-df27-4780-bc57-d3bf7bee83bb
 # ╟─27847dc4-ee0a-11ea-0651-ebbbb3cfd58c
 # ╟─b01858b6-edf3-11ea-0826-938d33c19a43
@@ -2070,7 +2082,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─9afc4dca-ee16-11ea-354f-1d827aaa61d2
 # ╠═cf6b05e2-ee16-11ea-3317-8919565cb56e
 # ╟─e3616062-ee27-11ea-04a9-b9ec60842a64
-# ╟─e5b6cd34-ee27-11ea-0d60-bd4796540b18
+# ╠═e5b6cd34-ee27-11ea-0d60-bd4796540b18
 # ╟─b4e98589-f221-4922-b11e-364d72d0788e
 # ╟─d06ea762-ee27-11ea-2e9c-1bcff86a3fe0
 # ╟─e1dc0622-ee16-11ea-274a-3b6ec9e15ab5
@@ -2109,8 +2121,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═1bf94c00-ee19-11ea-0e3c-e12bc68d8e28
 # ╟─1ff6b5cc-ee19-11ea-2ca8-7f00c204f587
 # ╟─0001f782-ee0e-11ea-1fb4-2b5ef3d241e2
-# ╟─8ffe16ce-ee20-11ea-18bd-15640f94b839
-# ╟─5842895a-ee10-11ea-119d-81e4c4c8c53b
 # ╟─2d9f3ae4-9e4c-49ce-aab0-5f87aba85c3e
 # ╟─5516c800-edee-11ea-12cf-3f8c082ef0ef
 # ╟─57360a7a-edee-11ea-0c28-91463ece500d
